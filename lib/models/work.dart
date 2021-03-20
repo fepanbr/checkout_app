@@ -8,32 +8,38 @@ enum WorkState { beforeWork, working, afterWork }
 class Work with ChangeNotifier {
   String _infoText = '';
   WorkState _state = WorkState.beforeWork;
-  TodayTimer _todayTimer;
-  WeekTimer _weekTimer;
+  TodayTimer todayTimer;
+  WeekTimer weekTimer;
 
   double restTime = 0.0;
 
-  Work(this._todayTimer, this._weekTimer) {
-    restTime = _weekTimer.getRestTimeToDouble();
+  Work(this.todayTimer, this.weekTimer) {
+    restTime = weekTimer.getRestTimeToDouble();
   }
 
   String get getStateText => _infoText;
   WorkState get getState => _state;
+  TodayTimer get getTodayTimer => todayTimer;
 
   void startWork() {
     _state = WorkState.working;
-    _todayTimer.start();
-    _weekTimer.start();
-    _infoText = StateMessage.workMsg(_todayTimer.startTime);
+    todayTimer.start();
+    weekTimer.start();
+    _infoText = StateMessage.workMsg(todayTimer.startTime);
     notifyListeners();
   }
 
   void offWork() {
     _state = WorkState.afterWork;
-    _todayTimer.stop();
-    _weekTimer.stop();
-    _weekTimer.getRestTime();
-    _infoText = StateMessage.offWorkMsg(_todayTimer.getWorkTime());
+    todayTimer.stop();
+    weekTimer.stop();
+    weekTimer.getRestTime();
+    _infoText = StateMessage.offWorkMsg(todayTimer.getWorkTime());
+    notifyListeners();
+  }
+
+  void addLunch() {
+    todayTimer.toggleLunch();
     notifyListeners();
   }
 }

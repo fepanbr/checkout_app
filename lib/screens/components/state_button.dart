@@ -27,41 +27,56 @@ class _StateButtonState extends State<StateButton> {
           SizedBox(
             height: 20,
           ),
-          FlatButton(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
-                side: BorderSide(color: kPrimaryColor)),
-            onPressed: () {
-              if (_work.getState == WorkState.beforeWork) {
-                _work.startWork();
-              } else {
-                _work.offWork();
-              }
-            },
-            padding: EdgeInsets.all(20.0),
-            color: kPrimaryColor,
-            child: Consumer<Work>(
-              builder: (context, workTimeState, child) {
-                return Text(
-                  _work.getState == WorkState.working ? '퇴근하기' : '출근하기',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 150.0),
+                child: FlatButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    side: BorderSide(color: kPrimaryColor),
                   ),
-                );
-              },
-            ),
+                  onPressed: () {
+                    if (_work.getState == WorkState.afterWork) return;
+                    if (_work.getState == WorkState.beforeWork) {
+                      _work.startWork();
+                    } else {
+                      _work.offWork();
+                    }
+                  },
+                  padding: EdgeInsets.all(20.0),
+                  color: kPrimaryColor,
+                  child: Consumer<Work>(
+                    builder: (context, workTimeState, child) {
+                      return Text(
+                        _work.getState == WorkState.working ? '퇴근하기' : '출근하기',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0),
+                child: InkWell(
+                  onTap: () {
+                    _work.addLunch();
+                  },
+                  child: Icon(
+                    Icons.lunch_dining,
+                    size: 62,
+                    color: _work.todayTimer.haveLunch
+                        ? Colors.deepOrangeAccent
+                        : kBodyTextColorLight,
+                  ),
+                ),
+              ),
+            ],
           ),
-          // Checkbox(
-          //   value: _isChecked,
-          //   onChanged: (bool value) {
-          //     setState(() {
-          //       _isChecked = value;
-          //       print("have food?: $_isChecked");
-          //     });
-          //   },
-          // ),
         ],
       ),
     );

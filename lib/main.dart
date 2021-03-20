@@ -5,6 +5,8 @@ import 'package:songaree_worktime/models/today_timer.dart';
 import 'package:songaree_worktime/models/week_timer.dart';
 import 'package:songaree_worktime/models/work.dart';
 import 'package:songaree_worktime/screens/home_screen.dart';
+import 'package:songaree_worktime/screens/login_screen.dart';
+import 'package:songaree_worktime/screens/register_screen.dart';
 import 'package:songaree_worktime/theme.dart';
 
 void main() {
@@ -19,8 +21,13 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: '송아리당뇨 출근앱',
         theme: themeData(context),
-        home: MyHomePage(),
         debugShowCheckedModeBanner: false,
+        initialRoute: '/login',
+        routes: {
+          '/login': (context) => LoginScreen(),
+          '/register': (context) => RegisterScreen(),
+          '/home': (context) => MyHomePage()
+        },
       ),
     );
   }
