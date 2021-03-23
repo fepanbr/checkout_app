@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:songaree_worktime/constants.dart';
+import 'package:songaree_worktime/screens/register_screen.dart';
 import 'package:songaree_worktime/theme.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -102,7 +103,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             print(
                                 'time to pose $email and $password to my API');
                           }
-                          Navigator.pushNamed((context), '/register');
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RegisterScreen()));
                         },
                         child: Text(
                           'register',
