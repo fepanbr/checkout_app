@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:songaree_worktime/constants.dart';
 import 'package:songaree_worktime/models/today_timer.dart';
@@ -8,6 +9,8 @@ import 'package:songaree_worktime/screens/home_screen.dart';
 import 'package:songaree_worktime/screens/login_screen.dart';
 import 'package:songaree_worktime/screens/register_screen.dart';
 import 'package:songaree_worktime/theme.dart';
+
+final storage = FlutterSecureStorage();
 
 void main() {
   runApp(MyApp());

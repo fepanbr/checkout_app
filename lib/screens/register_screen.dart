@@ -102,7 +102,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           Navigator.pop(context);
                         },
                         child: Text(
-                          'to Login',
+                          'back',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16.0,
