@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:songaree_worktime/models/time_format.dart';
 import 'package:songaree_worktime/models/timer.dart';
-import 'package:http/http.dart' as http;
-
 
 class TodayTimer with Timer, ChangeNotifier {
   DateTime _startTime;
@@ -34,8 +32,6 @@ class TodayTimer with Timer, ChangeNotifier {
 
     _startTime = null;
     _endTime = null;
-    
-    
   }
 
   toggleLunch() {
@@ -45,6 +41,5 @@ class TodayTimer with Timer, ChangeNotifier {
   @override
   TimeFormat getWorkTime() {
     return TimeFormat(_totalWorkTime);
-    throw UnimplementedError();
   }
 }

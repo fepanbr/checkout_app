@@ -1,7 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:songaree_worktime/constants.dart';
-import 'package:songaree_worktime/screens/register_screen.dart';
-import 'package:songaree_worktime/theme.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,9 +11,26 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final formKey = GlobalKey<FormState>();
 
-  String email = '';
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
 
-  String password = '';
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<UserCredential> signInWithGoogle() async {
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,96 +45,31 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'LOGIN',
+                  '송아리 출근앱 로그인',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
                 ),
-                Form(
-                  key: formKey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          hintText: 'example@example.com',
-                        ),
-                        onSaved: (String value) {
-                          email = value;
-                        },
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          hintText: 'Password',
-                        ),
-                        onSaved: (String value) {
-                          password = value;
-                        },
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          minimumSize:
-                              MaterialStateProperty.all<Size>(Size(200, 40)),
-                          backgroundColor: MaterialStateProperty.all(
-                            kPrimaryColor,
-                          ),
-                        ),
-                        onPressed: () {
-                          if (formKey.currentState.validate()) {
-                            formKey.currentState.save();
-                            print(
-                                'time to pose $email and $password to my API');
-                          }
-                          Navigator.pushNamed((context), '/home');
-                        },
-                        child: Text(
-                          'login',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          minimumSize:
-                              MaterialStateProperty.all<Size>(Size(200, 40)),
-                          backgroundColor: MaterialStateProperty.all(
-                            kPrimaryColor,
-                          ),
-                        ),
-                        onPressed: () {
-                          if (formKey.currentState.validate()) {
-                            formKey.currentState.save();
-                            print(
-                                'time to pose $email and $password to my API');
-                          }
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => RegisterScreen()));
-                        },
-                        child: Text(
-                          'register',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )
-                    ],
+                SizedBox(
+                  height: 30,
+                ),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    minimumSize: MaterialStateProperty.all<Size>(Size(200, 40)),
+                    backgroundColor: MaterialStateProperty.all(
+                      kPrimaryColor,
+                    ),
+                  ),
+                  onPressed: () async {
+                    var user = await signInWithGoogle();
+                    print("user : $user");
+                    Navigator.pushNamed((context), '/home');
+                  },
+                  child: Text(
+                    'google login',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 )
               ],

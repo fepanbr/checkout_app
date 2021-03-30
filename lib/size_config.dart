@@ -12,6 +12,8 @@ class SizeConfig {
     screenHeight = _mediaQueryData.size.height;
     screenWidth = _mediaQueryData.size.width;
     orientation = _mediaQueryData.orientation;
+
+    print('사이즈 : $screenWidth * $screenHeight');
   }
 }
 

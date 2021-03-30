@@ -12,7 +12,6 @@ class _TimeInHourAndMinuteState extends State<TimeInHourAndMinute> {
   TimeOfDay _timeOfDay = TimeOfDay.now();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Timer.periodic(Duration(seconds: 1), (timer) {
       if (_timeOfDay.minute != TimeOfDay.now().minute) {
@@ -58,7 +57,7 @@ class _TimeInHourAndMinuteState extends State<TimeInHourAndMinute> {
           "$_hour:${_timeOfDay.minute < 10 ? "0" + _timeOfDay.minute.toString() : _timeOfDay.minute}",
           style: TextStyle(
             color: kBodyTextColorLight,
-            fontSize: 65.0,
+            fontSize: 50.0,
             height: 0.9,
           ),
         ),

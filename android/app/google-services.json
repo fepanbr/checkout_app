@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "510233137726",
+    "project_id": "songaree-check-be",
+    "storage_bucket": "songaree-check-be.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:510233137726:android:3c66cf112db865e838f76f",
+        "android_client_info": {
+          "package_name": "com.example.songaree_worktime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "510233137726-ql6uue75j78p1mmm8d67s4mn55ro4t90.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.songaree_worktime",
+            "certificate_hash": "dbc5fca5045d6badc28edb2e0f2f2dfdd90c9933"
+          }
+        },
+        {
+          "client_id": "510233137726-52ikbbfgi8uuhkmofvg423hf2dqrmpu8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlRGunr4GlhFo8JM0-L6311xNN3bozD9w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "510233137726-52ikbbfgi8uuhkmofvg423hf2dqrmpu8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "510233137726-tvr98gi3tfpouqcphdfkscn9b4srefh5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.songareeWorktime"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

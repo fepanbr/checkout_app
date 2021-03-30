@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
@@ -6,8 +7,6 @@ import 'package:songaree_worktime/models/today_timer.dart';
 import 'package:songaree_worktime/models/week_timer.dart';
 import 'package:songaree_worktime/models/work.dart';
 import 'package:songaree_worktime/screens/home_screen.dart';
-import 'package:songaree_worktime/screens/login_screen.dart';
-import 'package:songaree_worktime/screens/register_screen.dart';
 import 'package:songaree_worktime/theme.dart';
 
 final storage = FlutterSecureStorage();
@@ -20,19 +19,26 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => Work(TodayTimer(), WeekTimer()),
-      child: MaterialApp(
-        title: '송아리당뇨 출근앱',
-        theme: themeData(context),
-        debugShowCheckedModeBanner: false,
-        initialRoute: '/login',
-        routes: {
-          '/login': (context) => LoginScreen(),
-          '/register': (context) => RegisterScreen(),
-          '/home': (context) => MyHomePage()
-        },
-      ),
-    );
+        create: (context) => Work(TodayTimer(), WeekTimer()),
+        child: FutureBuilder(
+          future: Firebase.initializeApp(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text('firebase load fail'),
+              );
+            }
+            if (snapshot.connectionState == ConnectionState.done) {
+              return MaterialApp(
+                title: '송아리당뇨 출근앱',
+                theme: themeData(context),
+                debugShowCheckedModeBanner: false,
+                home: MyHomePage(),
+              );
+            }
+            return CircularProgressIndicator();
+          },
+        ));
   }
 }
 

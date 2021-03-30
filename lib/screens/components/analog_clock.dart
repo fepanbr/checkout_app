@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:songaree_worktime/constants.dart';
 import 'package:songaree_worktime/screens/components/clock_painter.dart';
+import 'package:songaree_worktime/size_config.dart';
 
 class AnalogClock extends StatefulWidget {
   @override
@@ -17,7 +18,6 @@ class _AnalogClockState extends State<AnalogClock> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (this.mounted) {
@@ -31,20 +31,19 @@ class _AnalogClockState extends State<AnalogClock> {
   @override
   void deactivate() {
     super.deactivate();
-    // TODO: implement deactivate
     _timer.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: 30,
-        horizontal: 40,
-      ),
+    return Container(
+      width: getProportionateScreenWidth(400),
+      height: getProportionateScreenHeight(300),
       child: AspectRatio(
         aspectRatio: 1,
         child: Container(
+          width: getProportionateScreenWidth(15),
+          height: getProportionateScreenWidth(10),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             shape: BoxShape.circle,

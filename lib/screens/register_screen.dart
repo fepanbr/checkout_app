@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:songaree_worktime/constants.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -8,9 +9,28 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final formKey = GlobalKey<FormState>();
-  String email = '';
-  String password = '';
 
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  final storage = new FlutterSecureStorage();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  // var res = await http.post(
+  //   Uri.http($SERVER_IP, unencodedPath)"/user",
+  //   body: {
+  //     "name": _usernameController.text,
+  //     "password": _passwordController.text
+  //   },
+  // );
+
+  // return res;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,26 +52,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: Column(
                     children: [
                       TextFormField(
+                        autofocus: true,
+                        controller: _usernameController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           labelText: 'Email',
                           hintText: 'example@example.com',
                         ),
-                        onSaved: (String value) {
-                          email = value;
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return '이메일을 입력해주세요.';
+                          }
+                          return null;
                         },
                       ),
                       SizedBox(
                         height: 10,
                       ),
                       TextFormField(
+                        controller: _passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
                           labelText: 'Password',
                           hintText: 'Password',
                         ),
-                        onSaved: (String value) {
-                          password = value;
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return '비밀번호를 입력해주세요.';
+                          }
+                          return null;
                         },
                       ),
                       SizedBox(
@@ -65,14 +94,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             kPrimaryColor,
                           ),
                         ),
-                        onPressed: () {
-                          if (formKey.currentState.validate()) {
-                            formKey.currentState.save();
-                            print(
-                                'time to pose $email and $password to my API');
-                          }
-                          Navigator.pushNamed((context), '/home');
-                        },
+                        onPressed: () {},
                         child: Text(
                           'register',
                           style: TextStyle(
@@ -94,11 +116,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                         onPressed: () {
-                          if (formKey.currentState.validate()) {
-                            formKey.currentState.save();
-                            print(
-                                'time to pose $email and $password to my API');
-                          }
                           Navigator.pop(context);
                         },
                         child: Text(

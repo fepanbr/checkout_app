@@ -10,16 +10,11 @@ class WeekTimer extends Timer {
 
   @override
   TimeFormat getWorkTime() {
-    // TODO: implement getWorkTime
     return TimeFormat(_weekWorkTime);
   }
 
   TimeFormat getRestTime() {
     return TimeFormat(_weekTotalWorkTime - _weekWorkTime);
-    int hours = (_weekTotalWorkTime - _weekWorkTime).inHours;
-    int minutes = (_weekTotalWorkTime - _weekWorkTime).inMinutes % 60;
-    return TimeFormat(_weekWorkTime);
-    print("남은 근무 시간 : $hours시간 $minutes분");
   }
 
   double getRestTimeToDouble() {
