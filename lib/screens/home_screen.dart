@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:songaree_worktime/constants.dart';
+import 'package:songaree_worktime/models/work.dart';
 import 'package:songaree_worktime/screens/components/analog_clock.dart';
 import 'package:songaree_worktime/screens/components/state_button.dart';
 import 'package:songaree_worktime/screens/components/time_in_hour_minute.dart';
@@ -9,8 +13,15 @@ import 'package:songaree_worktime/screens/login_screen.dart';
 import 'package:songaree_worktime/size_config.dart';
 
 class HomeScreen extends StatelessWidget {
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  User user = FirebaseAuth.instance.currentUser;
+  DateTime now = DateTime.now();
   @override
   Widget build(BuildContext context) {
+    final Work _work = Provider.of<Work>(context);
+    if (_work.isFirst) {
+      _work.initWork();
+    }
     SizeConfig().init(context);
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
@@ -18,7 +29,15 @@ class HomeScreen extends StatelessWidget {
         if (snapshot.hasData == null) {
           return LoginScreen();
         } else {
-          print('login user: ${FirebaseAuth.instance.currentUser}');
+          print('login user: ${user.displayName}');
+          users.doc(FirebaseAuth.instance.currentUser.uid).set({
+            "name": user.displayName,
+            "phone": user.phoneNumber,
+            "email": user.email
+          }).then(
+            (value) => {print("user 저장됨")},
+          );
+
           return SafeArea(
             child: SizedBox(
               width: double.infinity,
@@ -44,7 +63,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     AnalogClock(),
                     SizedBox(
-                      height: getProportionateScreenHeight(40),
+                      height: getProportionateScreenHeight(100),
                     ),
                     WorkingBar(),
                     SizedBox(

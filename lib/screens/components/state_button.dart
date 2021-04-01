@@ -70,7 +70,7 @@ class _StateButtonState extends State<StateButton> {
                 child: Icon(
                   Icons.lunch_dining,
                   size: 40,
-                  color: _work.todayTimer.haveLunch
+                  color: _work.haveLunch
                       ? Colors.deepOrangeAccent
                       : kBodyTextColorLight,
                 ),

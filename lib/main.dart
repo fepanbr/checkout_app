@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => Work(TodayTimer(), WeekTimer()),
+        create: (context) => Work(),
         child: FutureBuilder(
           future: Firebase.initializeApp(),
           builder: (context, snapshot) {

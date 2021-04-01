@@ -20,4 +20,14 @@ class StateMessage<T> {
         : dateTime.minute.toString();
     return '$hours시 $minutes분에 출근하였습니다.';
   }
+
+  static String workingMsg(TimeFormat timeFormat) {
+    String hours = timeFormat.hours.toString().length == 1
+        ? '0${timeFormat.hours}'
+        : timeFormat.hours.toString();
+    String minutes = timeFormat.minutes.toString().length == 1
+        ? '0${timeFormat.minutes}'
+        : timeFormat.minutes.toString();
+    return '$hours시간 $minutes분 근무 중!';
+  }
 }

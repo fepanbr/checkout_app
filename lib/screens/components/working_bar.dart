@@ -17,7 +17,7 @@ class WorkingBar extends StatelessWidget {
       child: Center(
         child: new LinearPercentIndicator(
           lineHeight: 10.0,
-          percent: _value.restTime,
+          // percent: _value.restTime,
           linearStrokeCap: LinearStrokeCap.roundAll,
           progressColor: kPrimaryColor,
         ),

@@ -37,7 +37,7 @@ class _AnalogClockState extends State<AnalogClock> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: getProportionateScreenWidth(400),
+      width: getProportionateScreenWidth(300),
       height: getProportionateScreenHeight(300),
       child: AspectRatio(
         aspectRatio: 1,
