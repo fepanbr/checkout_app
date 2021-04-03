@@ -53,14 +53,13 @@ class Work with ChangeNotifier {
         DateTime startDate = DateTime.parse(startDtData);
         TimeFormat timeFormat = TimeFormat(endDate.difference(startDate));
         _infoText = StateMessage.workingMsg(timeFormat);
+
         _state = WorkState.working;
       }
 
       notifyListeners();
     }
   }
-
-  Work() {}
 
   String get getStateText => _infoText;
   WorkState get getState => _state;
@@ -95,9 +94,7 @@ class Work with ChangeNotifier {
     DateTime now = DateTime.now();
     String currentDate = DateFormat("yyyyMMdd").format(now);
     worktimes.doc(currentDate).update({
-      "endDate": haveLunch
-          ? DateFormat("yyyyMMddHHmm").format(now.add(Duration(hours: 1)))
-          : DateFormat("yyyyMMddHHmm").format(now),
+      "endDate": DateFormat("yyyyMMddHHmm").format(now),
       "haveLunch": haveLunch
     }).then((value) async {
       DocumentSnapshot documentSnapshot =
@@ -110,10 +107,13 @@ class Work with ChangeNotifier {
         String endDtData = data['endDate'].toString().substring(0, 8) +
             "T" +
             data['endDate'].toString().substring(8);
+        bool haveLunch = data['haveLunch'];
         DateTime startDate = DateTime.parse(startDtData);
         DateTime endDate = DateTime.parse(endDtData);
 
-        TimeFormat timeFormat = TimeFormat(endDate.difference(startDate));
+        TimeFormat timeFormat = haveLunch
+            ? TimeFormat(endDate.add(Duration(hours: 1)).difference(startDate))
+            : TimeFormat(endDate.difference(startDate));
         _infoText = StateMessage.offWorkMsg(timeFormat);
         notifyListeners();
       }
