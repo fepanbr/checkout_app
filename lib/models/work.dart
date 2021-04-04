@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:songaree_worktime/models/firebase_worktime.dart';
 import 'package:songaree_worktime/models/state_message.dart';
 import 'package:songaree_worktime/models/time_format.dart';
 import 'package:songaree_worktime/models/today_timer.dart';
@@ -12,50 +13,51 @@ enum WorkState { beforeWork, working, afterWork }
 class Work with ChangeNotifier {
   WorkState _state = WorkState.beforeWork;
   bool haveLunch = false;
-  Duration workingTime;
+  // Duration workingTime;
   bool isFirst = true;
 
   String _infoText = '';
 
   CollectionReference worktimes = FirebaseFirestore.instance
       .collection('users')
-      .doc(FirebaseAuth.instance.currentUser.uid)
+      .doc(FirebaseAuth.instance.currentUser?.uid)
       .collection('worktime');
 
   void initWork() async {
     isFirst = false;
-    DateTime now = DateTime.now();
-    DocumentSnapshot documentSnapshot =
-        await worktimes.doc(DateFormat("yyyyMMdd").format(now)).get();
+    // DateTime now = DateTime.now();
+    FirebaseWorkTime();
+    // DocumentSnapshot documentSnapshot =
+    //     await worktimes.doc(DateFormat("yyyyMMdd").format(now)).get();
 
-    if (documentSnapshot.exists) {
-      Map<String, dynamic> data = documentSnapshot.data();
-      haveLunch = data['haveLunch'];
-      String startDtData = data['startDate'].toString().substring(0, 8) +
-          "T" +
-          data['startDate'].toString().substring(8);
-      if (data['endDate'] != null) {
-        String endDtData = data['endDate'].toString().substring(0, 8) +
-            "T" +
-            data['endDate'].toString().substring(8);
-        DateTime startDate = DateTime.parse(startDtData);
-        DateTime endDate = DateTime.parse(endDtData);
+    // if (documentSnapshot.exists) {
+    //   Map<String, dynamic> data = documentSnapshot.data();
+    //   haveLunch = data['haveLunch'];
+    //   String startDtData = data['startDate'].toString().substring(0, 8) +
+    //       "T" +
+    //       data['startDate'].toString().substring(8);
+    //   if (data['endDate'] != null) {
+    //     String endDtData = data['endDate'].toString().substring(0, 8) +
+    //         "T" +
+    //         data['endDate'].toString().substring(8);
+    //     DateTime startDate = DateTime.parse(startDtData);
+    //     DateTime endDate = DateTime.parse(endDtData);
 
-        TimeFormat timeFormat = TimeFormat(endDate.difference(startDate));
-        _infoText = StateMessage.offWorkMsg(timeFormat);
-        _state = WorkState.afterWork;
-      } else {
-        haveLunch = false;
-        String startDtData = data['startDate'].toString().substring(0, 8) +
-            "T" +
-            data['startDate'].toString().substring(8);
-        DateTime endDate = DateTime.now();
-        DateTime startDate = DateTime.parse(startDtData);
-        TimeFormat timeFormat = TimeFormat(endDate.difference(startDate));
-        _infoText = StateMessage.workingMsg(timeFormat);
+    //     TimeFormat timeFormat = TimeFormat(endDate.difference(startDate));
+    //     _infoText = StateMessage.offWorkMsg(timeFormat);
+    //     _state = WorkState.afterWork;
+    //   } else {
+    //     haveLunch = false;
+    //     String startDtData = data['startDate'].toString().substring(0, 8) +
+    //         "T" +
+    //         data['startDate'].toString().substring(8);
+    //     DateTime endDate = DateTime.now();
+    //     DateTime startDate = DateTime.parse(startDtData);
+    //     TimeFormat timeFormat = TimeFormat(endDate.difference(startDate));
+    //     _infoText = StateMessage.workingMsg(timeFormat);
 
-        _state = WorkState.working;
-      }
+    //     _state = WorkState.working;
+    //   }
 
       notifyListeners();
     }

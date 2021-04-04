@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:songaree_worktime/models/worktime.dart';
 
-class FirebaseWork {
+class FirebaseWorkTime {
   CollectionReference worktimes = FirebaseFirestore.instance
       .collection('users')
       .doc(FirebaseAuth.instance.currentUser!.uid)
       .collection('worktime');
 
-  getTodayLog() async {
-    DateTime now = DateTime.now();
+  Future<WorkTime> getWorkLog(DateTime time) async {
     DocumentSnapshot documentSnapshot =
-        await worktimes.doc(DateFormat("yyyyMMdd").format(now)).get();
+        await worktimes.doc(DateFormat("yyyyMMdd").format(time)).get();
     Map<String, dynamic>? data = documentSnapshot.data();
     String? startDtData;
     String? endDtData;
@@ -21,7 +21,10 @@ class FirebaseWork {
     endDtData = data['endDate'].toString().substring(0, 8) +
         "T" +
         data['endDate'].toString().substring(8);
-    DateTime endDate = DateTime.parse(endDtData);
-    DateTime startDate = DateTime.parse(startDtData);
+    DateTime endTime = DateTime.parse(endDtData);
+    DateTime startTime = DateTime.parse(startDtData);
+    bool haveLunch = data['haveLunch'];
+
+    return WorkTime(startTime, endTime, haveLunch);
   }
 }
