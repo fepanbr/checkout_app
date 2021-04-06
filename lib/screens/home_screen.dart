@@ -14,7 +14,7 @@ import 'package:songaree_worktime/size_config.dart';
 
 class HomeScreen extends StatelessWidget {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
-  User user = FirebaseAuth.instance.currentUser;
+  User? user = FirebaseAuth.instance.currentUser;
   DateTime now = DateTime.now();
   @override
   Widget build(BuildContext context) {
@@ -26,14 +26,14 @@ class HomeScreen extends StatelessWidget {
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        if (snapshot.hasData == null) {
+        if (snapshot.hasData) {
           return LoginScreen();
         } else {
-          print('login user: ${user.displayName}');
-          users.doc(FirebaseAuth.instance.currentUser.uid).set({
-            "name": user.displayName,
-            "phone": user.phoneNumber,
-            "email": user.email
+          print('login user: ${user!.displayName}');
+          users.doc(user!.uid).set({
+            "name": user!.displayName,
+            "phone": user!.phoneNumber,
+            "email": user!.email
           }).then(
             (value) => {print("user 저장됨")},
           );

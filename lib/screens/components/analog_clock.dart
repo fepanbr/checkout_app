@@ -14,7 +14,7 @@ class AnalogClock extends StatefulWidget {
 class _AnalogClockState extends State<AnalogClock> {
   DateTime _dateTime = DateTime.now();
 
-  Timer _timer;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _AnalogClockState extends State<AnalogClock> {
   @override
   void deactivate() {
     super.deactivate();
-    _timer.cancel();
+    _timer!.cancel();
   }
 
   @override

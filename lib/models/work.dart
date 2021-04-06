@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -5,8 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:songaree_worktime/models/firebase_worktime.dart';
 import 'package:songaree_worktime/models/state_message.dart';
 import 'package:songaree_worktime/models/time_format.dart';
-import 'package:songaree_worktime/models/today_timer.dart';
-import 'package:songaree_worktime/models/week_timer.dart';
+import 'package:songaree_worktime/models/worktime.dart';
 
 enum WorkState { beforeWork, working, afterWork }
 
@@ -15,18 +16,35 @@ class Work with ChangeNotifier {
   bool haveLunch = false;
   // Duration workingTime;
   bool isFirst = true;
-
   String _infoText = '';
-
-  CollectionReference worktimes = FirebaseFirestore.instance
-      .collection('users')
-      .doc(FirebaseAuth.instance.currentUser?.uid)
-      .collection('worktime');
+  FirebaseWorkTime firebaseWorkTime = FirebaseWorkTime();
 
   void initWork() async {
     isFirst = false;
-    // DateTime now = DateTime.now();
-    FirebaseWorkTime();
+    DateTime now = DateTime.now();
+    WorkTime? worktime = await firebaseWorkTime.getWorkLog(now);
+
+    DateTime? startTime = worktime?.startTime;
+    DateTime? endTime = worktime?.endTime;
+
+    // 출근전
+    if (startTime == null && endTime == null) {
+      _state = WorkState.beforeWork;
+      haveLunch = false;
+    } else if (startTime != null && endTime == null) {
+      // 출근 후
+      _infoText =
+          StateMessage.workingMsg(TimeFormat(now.difference(startTime)));
+      _state = WorkState.working;
+      notifyListeners();
+    } else {
+      // 퇴근
+      _state = WorkState.afterWork;
+      haveLunch = false;
+      _infoText = '수고하셨습니다.';
+      notifyListeners();
+    }
+
     // DocumentSnapshot documentSnapshot =
     //     await worktimes.doc(DateFormat("yyyyMMdd").format(now)).get();
 
@@ -58,9 +76,6 @@ class Work with ChangeNotifier {
 
     //     _state = WorkState.working;
     //   }
-
-      notifyListeners();
-    }
   }
 
   String get getStateText => _infoText;
@@ -68,58 +83,23 @@ class Work with ChangeNotifier {
 
   void startWork() async {
     DateTime now = DateTime.now();
-    QuerySnapshot value = await worktimes
-        .where('startDate', isEqualTo: DateFormat("yyyyMMdd").format(now))
-        .get();
-
-    if (value.docs.length == 0) {
-      _state = WorkState.working;
-      _infoText = StateMessage.workMsg(now);
-      worktimes.doc(DateFormat("yyyyMMdd").format(now)).set(
-        {
-          "startDate": DateFormat("yyyyMMddHHmm").format(now),
-        },
-      ).then(
-        (value) => print("저장됨"),
-      );
-    }
-
+    firebaseWorkTime.writeStartTime(WorkTime(now, null, haveLunch));
+    _state = WorkState.working;
+    _infoText = StateMessage.workMsg(now);
     notifyListeners();
   }
 
-  void offWork() {
+  void offWork() async {
+    DateTime now = DateTime.now();
+    var workTime =
+        await firebaseWorkTime.writeEndTime(WorkTime(null, now, haveLunch));
+    TimeFormat timeFormat = TimeFormat(workTime!.workingTime!);
+    _infoText = StateMessage.offWorkMsg(timeFormat);
     _state = WorkState.afterWork;
+    notifyListeners();
     // todayTimer.stop();
     // weekTimer.stop();
     // weekTimer.getRestTime();
-
-    DateTime now = DateTime.now();
-    String currentDate = DateFormat("yyyyMMdd").format(now);
-    worktimes.doc(currentDate).update({
-      "endDate": DateFormat("yyyyMMddHHmm").format(now),
-      "haveLunch": haveLunch
-    }).then((value) async {
-      DocumentSnapshot documentSnapshot =
-          await worktimes.doc(currentDate).get();
-      if (documentSnapshot.exists) {
-        Map<String, dynamic> data = documentSnapshot.data();
-        String startDtData = data['startDate'].toString().substring(0, 8) +
-            "T" +
-            data['startDate'].toString().substring(8);
-        String endDtData = data['endDate'].toString().substring(0, 8) +
-            "T" +
-            data['endDate'].toString().substring(8);
-        bool haveLunch = data['haveLunch'];
-        DateTime startDate = DateTime.parse(startDtData);
-        DateTime endDate = DateTime.parse(endDtData);
-
-        TimeFormat timeFormat = haveLunch
-            ? TimeFormat(endDate.add(Duration(hours: 1)).difference(startDate))
-            : TimeFormat(endDate.difference(startDate));
-        _infoText = StateMessage.offWorkMsg(timeFormat);
-        notifyListeners();
-      }
-    });
   }
 
   void addLunch() {

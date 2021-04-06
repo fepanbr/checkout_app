@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:songaree_worktime/constants.dart';
+import 'package:songaree_worktime/screens/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -22,10 +23,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<UserCredential> signInWithGoogle() async {
-    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+        await googleUser!.authentication;
+    final OAuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
@@ -61,7 +62,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () async {
                     var user = await signInWithGoogle();
                     print("user : $user");
-                    Navigator.pushNamed((context), '/home');
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()));
                   },
                   child: Text(
                     'google login',
