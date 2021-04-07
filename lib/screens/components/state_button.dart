@@ -22,58 +22,59 @@ class _StateButtonState extends State<StateButton> {
       children: [
         Text(
           _work.getStateText,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20.0,
+          ),
         ),
         SizedBox(
           height: 20,
         ),
-        Row(
+        Column(
           children: [
-            Padding(
-              padding: EdgeInsets.only(left: getProportionateScreenWidth(170)),
-              child: FlatButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0),
-                  side: BorderSide(color: kPrimaryColor),
-                ),
-                onPressed: () {
-                  if (_work.getState == WorkState.afterWork) return;
-                  if (_work.getState == WorkState.beforeWork) {
-                    _work.startWork();
-                  } else {
-                    _work.offWork();
-                  }
+            FlatButton(
+              minWidth: getProportionateScreenWidth(100),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.0),
+                side: BorderSide(color: kPrimaryColor),
+              ),
+              onPressed: () {
+                if (_work.getState == WorkState.afterWork) return;
+                if (_work.getState == WorkState.beforeWork) {
+                  _work.startWork();
+                } else {
+                  _work.offWork();
+                }
+              },
+              padding: EdgeInsets.all(10.0),
+              color: kPrimaryColor,
+              child: Consumer<Work>(
+                builder: (context, workTimeState, child) {
+                  return Text(
+                    _work.getState == WorkState.working ? '퇴근하기' : '출근하기',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
                 },
-                padding: EdgeInsets.all(10.0),
-                color: kPrimaryColor,
-                child: Consumer<Work>(
-                  builder: (context, workTimeState, child) {
-                    return Text(
-                      _work.getState == WorkState.working ? '퇴근하기' : '출근하기',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    );
-                  },
-                ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: InkWell(
-                onTap: () {
-                  _work.addLunch();
-                  // firestore.collection('worktime').doc()
-                },
-                child: Icon(
-                  Icons.lunch_dining,
-                  size: 40,
-                  color: _work.haveLunch
-                      ? Colors.deepOrangeAccent
-                      : kBodyTextColorLight,
-                ),
+            SizedBox(
+              height: 10,
+            ),
+            InkWell(
+              onTap: () {
+                _work.addLunch();
+                // firestore.collection('worktime').doc()
+              },
+              child: Icon(
+                Icons.lunch_dining,
+                size: 40,
+                color: _work.haveLunch
+                    ? Colors.deepOrangeAccent
+                    : kBodyTextColorLight,
               ),
             ),
           ],

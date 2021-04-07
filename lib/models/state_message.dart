@@ -30,4 +30,30 @@ class StateMessage<T> {
         : timeFormat.minutes.toString();
     return '$hours시간 $minutes분 근무 중!';
   }
+
+  static String restTimeInWeeklyMsg(TimeFormat timeFormat) {
+    String hours = timeFormat.hours.toString().length == 1
+        ? '0${timeFormat.hours}'
+        : timeFormat.hours.toString();
+    String minutes = timeFormat.minutes.toString().length == 1
+        ? '0${timeFormat.minutes}'
+        : timeFormat.minutes.toString();
+    var duration =
+        Duration(hours: timeFormat.hours, minutes: timeFormat.minutes);
+
+    return duration.inHours <= 40
+        ? '이번주 남은 근무 시간: $hours시간 $minutes분'
+        : '이번주 근무시간을 모두 채웠습니다.';
+  }
+
+  static String totalTimeInWeeklyMsg(TimeFormat timeFormat) {
+    String hours = timeFormat.hours.toString().length == 1
+        ? '0${timeFormat.hours}'
+        : timeFormat.hours.toString();
+    String minutes = timeFormat.minutes.toString().length == 1
+        ? '0${timeFormat.minutes}'
+        : timeFormat.minutes.toString();
+
+    return '수고하셨습니다.\n총 근무시간: $hours시간 $minutes분';
+  }
 }

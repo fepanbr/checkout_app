@@ -25,7 +25,6 @@ class _TimeInHourAndMinuteState extends State<TimeInHourAndMinute> {
   }
 
   String getHourString() {
-    print("ggg,${_timeOfDay.hourOfPeriod}");
     if (_timeOfDay.hourOfPeriod == 0) {
       return "12";
     } else if (_timeOfDay.hourOfPeriod < 10) {

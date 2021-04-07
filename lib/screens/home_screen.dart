@@ -13,9 +13,11 @@ import 'package:songaree_worktime/screens/login_screen.dart';
 import 'package:songaree_worktime/size_config.dart';
 
 class HomeScreen extends StatelessWidget {
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
-  User? user = FirebaseAuth.instance.currentUser;
-  DateTime now = DateTime.now();
+  final CollectionReference users =
+      FirebaseFirestore.instance.collection('users');
+  final User? user = FirebaseAuth.instance.currentUser;
+  final DateTime now = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     final Work _work = Provider.of<Work>(context);
@@ -26,7 +28,7 @@ class HomeScreen extends StatelessWidget {
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
+        if (!snapshot.hasData) {
           return LoginScreen();
         } else {
           print('login user: ${user!.displayName}');
