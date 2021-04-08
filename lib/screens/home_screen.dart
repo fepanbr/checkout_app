@@ -31,7 +31,6 @@ class HomeScreen extends StatelessWidget {
         if (!snapshot.hasData) {
           return LoginScreen();
         } else {
-          print('login user: ${user!.displayName}');
           users.doc(user!.uid).set({
             "name": user!.displayName,
             "phone": user!.phoneNumber,
@@ -59,13 +58,16 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+                    SizedBox(
+                      height: getProportionateScreenHeight(10),
+                    ),
                     TimeInHourAndMinute(),
                     SizedBox(
-                      height: getProportionateScreenHeight(20),
+                      height: getProportionateScreenHeight(10),
                     ),
                     AnalogClock(),
                     SizedBox(
-                      height: getProportionateScreenHeight(100),
+                      height: getProportionateScreenHeight(50),
                     ),
                     WorkingBar(),
                     SizedBox(

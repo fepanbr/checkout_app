@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:songaree_worktime/models/firebase_worktime.dart';
 import 'package:songaree_worktime/models/state_message.dart';
@@ -36,6 +38,7 @@ class Work with ChangeNotifier {
     if (startTime == null && endTime == null) {
       _state = WorkState.beforeWork;
       haveLunch = false;
+      notifyListeners();
     } else if (startTime != null && endTime == null) {
       // 출근 후
       _infoText =
@@ -90,5 +93,15 @@ class Work with ChangeNotifier {
     }
     _infoText = StateMessage.restTimeInWeeklyMsg(timeFormat);
     notifyListeners();
+
+    Timer timer = Timer(Duration(seconds: 3), () async {
+      DateTime now = DateTime.now();
+      DateTime? startTime = await _firebaseWorkTime.getStartDate(now);
+      if (startTime == null) return;
+      _infoText =
+          StateMessage.workingMsg(TimeFormat(now.difference(startTime)));
+      notifyListeners();
+    });
+    timer.cancel();
   }
 }

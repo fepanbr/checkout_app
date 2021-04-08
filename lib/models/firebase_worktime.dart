@@ -9,6 +9,22 @@ class FirebaseWorkTime {
       .doc(FirebaseAuth.instance.currentUser!.uid)
       .collection('worktime');
 
+  Future<DateTime?> getStartDate(DateTime time) async {
+    DocumentSnapshot documentSnapshot =
+        await worktimes.doc(DateFormat("yyyyMMdd").format(time)).get();
+    Map<String, dynamic>? data = documentSnapshot.data();
+    String? startDtData;
+    if (data == null) {
+      return null;
+    } else {
+      startDtData = data['startDate'].toString().substring(0, 8) +
+          "T" +
+          data['startDate'].toString().substring(8);
+      DateTime startTime = DateTime.parse(startDtData);
+      return startTime;
+    }
+  }
+
   Future<WorkTime?> getWorkLog(DateTime time) async {
     DocumentSnapshot documentSnapshot =
         await worktimes.doc(DateFormat("yyyyMMdd").format(time)).get();
@@ -21,14 +37,16 @@ class FirebaseWorkTime {
       startDtData = data['startDate'].toString().substring(0, 8) +
           "T" +
           data['startDate'].toString().substring(8);
-      endDtData = data['endDate'].toString().substring(0, 8) +
-          "T" +
-          data['endDate'].toString().substring(8);
-      DateTime endTime = DateTime.parse(endDtData);
       DateTime startTime = DateTime.parse(startDtData);
-      bool haveLunch = data['haveLunch'];
 
-      return WorkTime(startTime, endTime, haveLunch);
+      if (data['endDate'] != null) {
+        endDtData = data['endDate'].toString().substring(0, 8) +
+            "T" +
+            data['endDate'].toString().substring(8);
+        DateTime endTime = DateTime.parse(endDtData);
+        bool haveLunch = data['haveLunch'];
+        return WorkTime(startTime, endTime, haveLunch);
+      }
     }
   }
 
@@ -48,7 +66,7 @@ class FirebaseWorkTime {
           print("저장됨");
           return true;
         },
-      ).catchError(() {
+      ).catchError((e) {
         return false;
       });
     }

@@ -9,8 +9,10 @@ class WorkTime {
       var duration = endTime!.add(Duration(hours: 1)).difference(startTime!);
       workingTime = duration.isNegative ? throw Error() : duration;
     } else {
-      var duration = endTime!.difference(startTime!);
-      workingTime = duration.isNegative ? throw Error() : duration;
+      if (endTime != null) {
+        var duration = endTime!.difference(startTime!);
+        workingTime = duration.isNegative ? throw Error() : duration;
+      }
     }
   }
 }
