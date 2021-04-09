@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:songaree_worktime/constants.dart';
 import 'package:songaree_worktime/models/work.dart';
 import 'package:songaree_worktime/screens/components/analog_clock.dart';
 import 'package:songaree_worktime/screens/components/state_button.dart';
@@ -44,26 +42,23 @@ class HomeScreen extends StatelessWidget {
               width: double.infinity,
               height: SizeConfig.screenHeight,
               child: Container(
-                margin: EdgeInsets.only(top: 15.0),
+                margin: EdgeInsets.only(top: 50.0),
                 height: SizeConfig.screenHeight,
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.wb_cloudy_outlined,
-                          color: kBodyTextColorLight,
-                          size: getProportionateScreenWidth(70),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: getProportionateScreenHeight(10),
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     Icon(
+                    //       Icons.wb_cloudy_outlined,
+                    //       color: kBodyTextColorLight,
+                    //       size: getProportionateScreenWidth(70),
+                    //     ),
+                    //   ],
+                    // ),
                     TimeInHourAndMinute(),
                     SizedBox(
-                      height: getProportionateScreenHeight(10),
+                      height: getProportionateScreenHeight(30),
                     ),
                     AnalogClock(),
                     SizedBox(

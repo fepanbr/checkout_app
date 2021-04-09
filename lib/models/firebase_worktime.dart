@@ -74,31 +74,32 @@ class FirebaseWorkTime {
   }
 
   Future<WorkTime?> writeEndTime(WorkTime workTime) async {
+    print(workTime.endTime);
+    print(workTime.startTime);
+    print(workTime.haveLunch);
     String currentDate = DateFormat("yyyyMMdd").format(workTime.startTime!);
-    worktimes.doc(currentDate).update({
+    await worktimes.doc(currentDate).update({
       "endDate": DateFormat("yyyyMMddHHmm").format(workTime.endTime!),
       "haveLunch": workTime.haveLunch!,
       "workingTime": workTime.workingTime!.inMinutes,
-    }).then((value) async {
-      DocumentSnapshot documentSnapshot =
-          await worktimes.doc(currentDate).get();
-      if (documentSnapshot.exists) {
-        Map<String, dynamic>? data = documentSnapshot.data();
-        String startDtData = data!['startDate'].toString().substring(0, 8) +
-            "T" +
-            data['startDate'].toString().substring(8);
-        String endDtData = data['endDate'].toString().substring(0, 8) +
-            "T" +
-            data['endDate'].toString().substring(8);
-        bool haveLunch = data['haveLunch'];
-        DateTime startDate = DateTime.parse(startDtData);
-        DateTime endDate = DateTime.parse(endDtData);
-
-        return WorkTime(startDate, endDate, haveLunch);
-      } else {
-        return null;
-      }
     });
+    DocumentSnapshot documentSnapshot = await worktimes.doc(currentDate).get();
+    if (documentSnapshot.exists) {
+      Map<String, dynamic>? data = documentSnapshot.data();
+      String startDtData = data!['startDate'].toString().substring(0, 8) +
+          "T" +
+          data['startDate'].toString().substring(8);
+      String endDtData = data['endDate'].toString().substring(0, 8) +
+          "T" +
+          data['endDate'].toString().substring(8);
+      bool haveLunch = data['haveLunch'];
+      DateTime startDate = DateTime.parse(startDtData);
+      DateTime endDate = DateTime.parse(endDtData);
+
+      return WorkTime(startDate, endDate, haveLunch);
+    } else {
+      return null;
+    }
   }
 
   Future<Duration> getWeeklyWorkLog() async {

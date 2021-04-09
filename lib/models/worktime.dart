@@ -5,7 +5,10 @@ class WorkTime {
   Duration? workingTime;
 
   WorkTime(this.startTime, this.endTime, this.haveLunch) {
-    if (haveLunch!) {
+    print(startTime);
+    print(endTime);
+    print(haveLunch);
+    if (haveLunch == true) {
       var duration = endTime!.add(Duration(hours: 1)).difference(startTime!);
       workingTime = duration.isNegative ? throw Error() : duration;
     } else {

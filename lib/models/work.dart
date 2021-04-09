@@ -32,7 +32,9 @@ class Work with ChangeNotifier {
     Duration workingTimeInWeekly = await _firebaseWorkTime.getWeeklyWorkLog();
     TimeFormat timeFormat =
         TimeFormat(Duration(minutes: workingTimeInWeekly.inMinutes));
-    percentage = workingTimeInWeekly.inMinutes / 2400;
+    percentage = workingTimeInWeekly.inMinutes / 2400 > 1
+        ? 1
+        : workingTimeInWeekly.inMinutes / 2400;
 
     // 출근전
     if (startTime == null && endTime == null) {
@@ -64,9 +66,10 @@ class Work with ChangeNotifier {
 
   void offWork() async {
     DateTime now = DateTime.now();
+    DateTime? startDate = await _firebaseWorkTime.getStartDate(now);
     try {
-      var workTime =
-          await _firebaseWorkTime.writeEndTime(WorkTime(null, now, haveLunch));
+      var workTime = await _firebaseWorkTime
+          .writeEndTime(WorkTime(startDate, now, haveLunch));
       TimeFormat timeFormat = TimeFormat(workTime!.workingTime!);
       _infoText = StateMessage.offWorkMsg(timeFormat);
       _state = WorkState.afterWork;
