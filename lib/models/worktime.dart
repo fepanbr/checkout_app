@@ -4,7 +4,7 @@ class WorkTime {
   bool? haveLunch;
   Duration? workingTime;
 
-  WorkTime(this.startTime, this.endTime, this.haveLunch) {
+  WorkTime({this.startTime, this.endTime, this.haveLunch}) {
     print(startTime);
     print(endTime);
     print(haveLunch);

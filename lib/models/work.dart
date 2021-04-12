@@ -11,12 +11,12 @@ enum WorkState { beforeWork, working, afterWork }
 class Work with ChangeNotifier {
   FirebaseWorkTime _firebaseWorkTime = FirebaseWorkTime();
 
-  WorkState _state = WorkState.beforeWork;
+  late WorkState _state;
   bool haveLunch = false;
-  // Duration workingTime;
+
   bool isFirst = true;
-  String _infoText = '';
-  double percentage = 0;
+  late String _infoText;
+  late double percentage;
 
   String get getStateText => _infoText;
   WorkState get getState => _state;
@@ -24,41 +24,44 @@ class Work with ChangeNotifier {
   void initWork() async {
     isFirst = false;
     DateTime now = DateTime.now();
-    WorkTime? worktime = await _firebaseWorkTime.getWorkLog(now);
+    WorkTime? workLog = await _firebaseWorkTime.getWorkLog(now);
 
-    DateTime? startTime = worktime?.startTime;
-    DateTime? endTime = worktime?.endTime;
-
-    Duration workingTimeInWeekly = await _firebaseWorkTime.getWeeklyWorkLog();
-    TimeFormat timeFormat =
-        TimeFormat(Duration(minutes: workingTimeInWeekly.inMinutes));
-    percentage = workingTimeInWeekly.inMinutes / 2400 > 1
-        ? 1
-        : workingTimeInWeekly.inMinutes / 2400;
-
-    // 출근전
-    if (startTime == null && endTime == null) {
+    if (workLog == null) {
       _state = WorkState.beforeWork;
       haveLunch = false;
       notifyListeners();
-    } else if (startTime != null && endTime == null) {
-      // 출근 후
-      _infoText =
-          StateMessage.workingMsg(TimeFormat(now.difference(startTime)));
-      _state = WorkState.working;
-      notifyListeners();
     } else {
-      // 퇴근
-      _state = WorkState.afterWork;
-      haveLunch = false;
-      _infoText = StateMessage.totalTimeInWeeklyMsg(timeFormat);
-      notifyListeners();
+      DateTime startTime = workLog.startTime!;
+      DateTime? endTime = workLog.endTime;
+      Duration workingTimeInWeekly = await _firebaseWorkTime.getWeeklyWorkLog();
+
+      TimeFormat timeFormat =
+          TimeFormat(Duration(minutes: workingTimeInWeekly.inMinutes));
+
+      percentage = workingTimeInWeekly.inMinutes / 2400 > 1
+          ? 1
+          : workingTimeInWeekly.inMinutes / 2400;
+
+      if (endTime == null) {
+        // 출근 후
+        _infoText =
+            StateMessage.workingMsg(TimeFormat(now.difference(startTime)));
+        _state = WorkState.working;
+        notifyListeners();
+      } else {
+        // 퇴근
+        _state = WorkState.afterWork;
+        haveLunch = false;
+        _infoText = StateMessage.totalTimeInWeeklyMsg(timeFormat);
+        notifyListeners();
+      }
     }
   }
 
   void startWork() async {
     DateTime now = DateTime.now();
-    _firebaseWorkTime.writeStartTime(WorkTime(now, null, haveLunch));
+    _firebaseWorkTime.writeStartTime(
+        WorkTime(startTime: now, endTime: null, haveLunch: false));
     _state = WorkState.working;
     _infoText = StateMessage.workMsg(now);
     notifyListeners();
@@ -68,8 +71,8 @@ class Work with ChangeNotifier {
     DateTime now = DateTime.now();
     DateTime? startDate = await _firebaseWorkTime.getStartDate(now);
     try {
-      var workTime = await _firebaseWorkTime
-          .writeEndTime(WorkTime(startDate, now, haveLunch));
+      var workTime = await _firebaseWorkTime.writeEndTime(
+          WorkTime(startTime: startDate, endTime: now, haveLunch: haveLunch));
       TimeFormat timeFormat = TimeFormat(workTime!.workingTime!);
       _infoText = StateMessage.offWorkMsg(timeFormat);
       _state = WorkState.afterWork;

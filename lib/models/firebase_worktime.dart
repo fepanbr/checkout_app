@@ -45,7 +45,10 @@ class FirebaseWorkTime {
             data['endDate'].toString().substring(8);
         DateTime endTime = DateTime.parse(endDtData);
         bool haveLunch = data['haveLunch'];
-        return WorkTime(startTime, endTime, haveLunch);
+        return WorkTime(
+            startTime: startTime, endTime: endTime, haveLunch: haveLunch);
+      } else {
+        return WorkTime(startTime: startTime, endTime: null, haveLunch: false);
       }
     }
   }
@@ -96,7 +99,8 @@ class FirebaseWorkTime {
       DateTime startDate = DateTime.parse(startDtData);
       DateTime endDate = DateTime.parse(endDtData);
 
-      return WorkTime(startDate, endDate, haveLunch);
+      return WorkTime(
+          startTime: startDate, endTime: endDate, haveLunch: haveLunch);
     } else {
       return null;
     }
