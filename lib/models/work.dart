@@ -11,12 +11,12 @@ enum WorkState { beforeWork, working, afterWork }
 class Work with ChangeNotifier {
   FirebaseWorkTime _firebaseWorkTime = FirebaseWorkTime();
 
-  late WorkState _state;
+  WorkState _state = WorkState.beforeWork;
   bool haveLunch = false;
 
   bool isFirst = true;
-  late String _infoText;
-  late double percentage;
+  String _infoText = '';
+  double percentage = 0;
 
   String get getStateText => _infoText;
   WorkState get getState => _state;
@@ -29,6 +29,11 @@ class Work with ChangeNotifier {
     if (workLog == null) {
       _state = WorkState.beforeWork;
       haveLunch = false;
+      Duration workingTimeInWeekly = await _firebaseWorkTime.getWeeklyWorkLog();
+
+      percentage = workingTimeInWeekly.inMinutes / 2400 > 1
+          ? 1
+          : workingTimeInWeekly.inMinutes / 2400;
       notifyListeners();
     } else {
       DateTime startTime = workLog.startTime!;

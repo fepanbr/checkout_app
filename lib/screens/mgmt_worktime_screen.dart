@@ -8,6 +8,8 @@ class MgmtWorkTimeScreen extends StatefulWidget {
 class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Card();
+    return Card(
+      child: Text(''),
+    );
   }
 }
