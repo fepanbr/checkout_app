@@ -9,11 +9,12 @@ class WorkTime {
     print(endTime);
     print(haveLunch);
     if (haveLunch == true) {
-      var duration = endTime!.add(Duration(hours: 1)).difference(startTime!);
+      var duration = endTime!.difference(startTime!);
       workingTime = duration.isNegative ? throw Error() : duration;
     } else {
       if (endTime != null) {
-        var duration = endTime!.difference(startTime!);
+        var duration =
+            endTime!.subtract(Duration(hours: 1)).difference(startTime!);
         workingTime = duration.isNegative ? throw Error() : duration;
       }
     }
