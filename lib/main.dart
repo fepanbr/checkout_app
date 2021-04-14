@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:songaree_worktime/constants.dart';
 import 'package:songaree_worktime/models/work.dart';
 import 'package:songaree_worktime/screens/home_screen.dart';
+import 'package:songaree_worktime/screens/mgmt_worktime_screen.dart';
 import 'package:songaree_worktime/theme.dart';
 
 final storage = FlutterSecureStorage();
@@ -51,10 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
+    MgmtWorkTimeScreen(),
     Text(
       'Index 2: School',
       style: optionStyle,
