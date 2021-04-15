@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:songaree_worktime/constants.dart';
 
 class MgmtWorkTimeScreen extends StatefulWidget {
   @override
@@ -14,16 +15,66 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
         itemBuilder: (context, i) {
           if (i != 0) {
             return Card(
+              margin: EdgeInsets.only(bottom: 30),
               elevation: 5,
               child: Container(
                 width: 200,
-                height: 120,
+                height: 80,
                 child: Row(
                   children: [
                     Column(
                       children: [
-                        Text('28일'),
-                        Text('월'),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              right: BorderSide(
+                                color: kBodyTextColorLight,
+                                width: 3,
+                              ),
+                              // bottom: BorderSide(
+                              //   color: kBodyTextColorLight,
+                              //   width: 3,
+                              // ),
+                            ),
+                          ),
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Text(
+                                    '28',
+                                    style: TextStyle(
+                                      fontSize: 32,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          width: 100,
+                          height: 40,
+                        ),
+                        Container(
+                          width: 100,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              right: BorderSide(
+                                color: kBodyTextColorLight,
+                                width: 3,
+                              ),
+                            ),
+                          ),
+                          child: Align(
+                            alignment: Alignment.topCenter,
+                            child: Text('월',
+                                style: TextStyle(
+                                    fontSize: 32, fontWeight: FontWeight.w300)),
+                          ),
+                        ),
                       ],
                     ),
                     Column(
