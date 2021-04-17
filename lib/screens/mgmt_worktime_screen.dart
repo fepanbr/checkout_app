@@ -9,8 +9,11 @@ class MgmtWorkTimeScreen extends StatefulWidget {
 class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
       child: ListView.builder(
+        itemExtent: 120,
         padding: EdgeInsets.only(left: 20, right: 20, top: 100),
         itemBuilder: (context, i) {
           if (i != 0) {
@@ -24,42 +27,33 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
                   children: [
                     Column(
                       children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              right: BorderSide(
-                                color: kBodyTextColorLight,
-                                width: 3,
-                              ),
-                              // bottom: BorderSide(
-                              //   color: kBodyTextColorLight,
-                              //   width: 3,
-                              // ),
-                            ),
-                          ),
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Text(
-                                    '28',
-                                    style: TextStyle(
-                                      fontSize: 32,
-                                    ),
-                                  ),
+                        Expanded(
+                          child: Container(
+                            width: 100,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                right: BorderSide(
+                                  color: kBodyTextColorLight,
+                                  width: 3,
                                 ),
-                              ],
+                                // bottom: BorderSide(
+                                //   color: kBodyTextColorLight,
+                                //   width: 3,
+                                // ),
+                              ),
+                            ),
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Text(
+                                '28',
+                                style: TextStyle(
+                                    fontSize: 32, color: kPrimaryColor),
+                              ),
                             ),
                           ),
-                          width: 100,
-                          height: 40,
                         ),
                         Container(
                           width: 100,
-                          height: 40,
                           decoration: BoxDecoration(
                             border: Border(
                               right: BorderSide(
@@ -77,15 +71,59 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
                         ),
                       ],
                     ),
-                    Column(
-                      children: [
-                        Row(
-                          children: [Text('출근 : 00:00')],
-                        ),
-                        Row(
-                          children: [Text('출근 : 00:00')],
-                        )
-                      ],
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(left: 20),
+                                  child: Text(
+                                    '출근 :',
+                                    style: TextStyle(fontSize: 30),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 20, top: 5),
+                                    child: Text(
+                                      '00:00',
+                                      style: TextStyle(
+                                        fontSize: 30,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(left: 20),
+                                  child: Text(
+                                    '퇴근 :',
+                                    style: TextStyle(fontSize: 30),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 20, top: 5),
+                                    child: Text(
+                                      '00:00',
+                                      style: TextStyle(
+                                        fontSize: 30,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     )
                   ],
                 ),
