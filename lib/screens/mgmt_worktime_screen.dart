@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:songaree_worktime/constants.dart';
+import 'package:songaree_worktime/models/firebase_worktime.dart';
 
 class MgmtWorkTimeScreen extends StatefulWidget {
   @override
@@ -7,6 +8,13 @@ class MgmtWorkTimeScreen extends StatefulWidget {
 }
 
 class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseWorkTime().getWorkLogsInThisWeek();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(

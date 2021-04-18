@@ -1,10 +1,10 @@
 class WorkTime {
   DateTime? startTime;
   DateTime? endTime;
-  bool? haveLunch;
-  Duration? workingTime;
+  bool haveLunch = false;
+  late Duration workingTime;
 
-  WorkTime({this.startTime, this.endTime, this.haveLunch}) {
+  WorkTime({required this.startTime, this.endTime, required this.haveLunch}) {
     print(startTime);
     print(endTime);
     print(haveLunch);

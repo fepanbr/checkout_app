@@ -78,7 +78,7 @@ class Work with ChangeNotifier {
     try {
       var workTime = await _firebaseWorkTime.writeEndTime(
           WorkTime(startTime: startDate, endTime: now, haveLunch: haveLunch));
-      TimeFormat timeFormat = TimeFormat(workTime!.workingTime!);
+      TimeFormat timeFormat = TimeFormat(workTime!.workingTime);
       _infoText = StateMessage.offWorkMsg(timeFormat);
       _state = WorkState.afterWork;
       notifyListeners();

@@ -83,8 +83,8 @@ class FirebaseWorkTime {
     String currentDate = DateFormat("yyyyMMdd").format(workTime.startTime!);
     await worktimes.doc(currentDate).update({
       "endDate": DateFormat("yyyyMMddHHmm").format(workTime.endTime!),
-      "haveLunch": workTime.haveLunch!,
-      "workingTime": workTime.workingTime!.inMinutes,
+      "haveLunch": workTime.haveLunch,
+      "workingTime": workTime.workingTime.inMinutes,
     });
     DocumentSnapshot documentSnapshot = await worktimes.doc(currentDate).get();
     if (documentSnapshot.exists) {
@@ -125,6 +125,21 @@ class FirebaseWorkTime {
       }
     });
     return Duration(minutes: sumMinutes);
+  }
+
+  Future<void> getWorkLogsInThisWeek() async {
+    DateTime currentDate = DateTime.now();
+    DateTime monday = findFirstDateOfTheWeek(currentDate);
+    QuerySnapshot value = await worktimes
+        .where('startDate',
+            isGreaterThanOrEqualTo: DateFormat("yyyyMMdd").format(monday))
+        .where('endDate', isNotEqualTo: null)
+        .get();
+    value.docs.forEach((element) {
+      if (element.exists) {
+        print(element.data()!.cast());
+      }
+    });
   }
 
   DateTime findFirstDateOfTheWeek(DateTime dateTime) {
