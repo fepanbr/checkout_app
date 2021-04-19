@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:songaree_worktime/models/weekly_worktime.dart';
 import 'package:songaree_worktime/models/worktime.dart';
 
 class FirebaseWorkTime {
@@ -127,7 +128,8 @@ class FirebaseWorkTime {
     return Duration(minutes: sumMinutes);
   }
 
-  Future<void> getWorkLogsInThisWeek() async {
+  Future<List<WeeklyWorkTime>> getWorkLogsInThisWeek() async {
+    List<WeeklyWorkTime> workTimeList = [];
     DateTime currentDate = DateTime.now();
     DateTime monday = findFirstDateOfTheWeek(currentDate);
     QuerySnapshot value = await worktimes
@@ -135,11 +137,39 @@ class FirebaseWorkTime {
             isGreaterThanOrEqualTo: DateFormat("yyyyMMdd").format(monday))
         .where('endDate', isNotEqualTo: null)
         .get();
+
     value.docs.forEach((element) {
       if (element.exists) {
-        print(element.data()!.cast());
+        print(element.data()!);
+        var workTimeMap = element.data()!;
+        String startDtData =
+            workTimeMap['startDate'].toString().substring(0, 8) +
+                "T" +
+                workTimeMap['startDate'].toString().substring(8);
+        String endDtData = workTimeMap['endDate'].toString().substring(0, 8) +
+            "T" +
+            workTimeMap['endDate'].toString().substring(8);
+
+        DateTime startDate = DateTime.parse(startDtData);
+        DateTime endDate = DateTime.parse(endDtData);
+        if (workTimeMap.keys.contains('endDate')) {
+          workTimeList.add(WeeklyWorkTime(
+              endTime: endDate, startTime: startDate, isFake: false));
+        }
       }
     });
+
+    print(workTimeList.length);
+    var workTime = workTimeList.last;
+    var length = workTimeList.length;
+    for (var i = 0; i < 5 - length; i++) {
+      workTimeList.add(WeeklyWorkTime(
+          startTime: workTime.startTime.add(Duration(days: i + 1)),
+          endTime: workTime.endTime.add(Duration(days: i + 1)),
+          isFake: true));
+    }
+
+    return workTimeList;
   }
 
   DateTime findFirstDateOfTheWeek(DateTime dateTime) {
