@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 
 class WeeklyWorkTime {
   DateTime startTime;
-  DateTime endTime;
+  DateTime? endTime;
   int _dayOfWeek = 0;
   String dayOfWeekToString = '';
   bool isFake = false;
@@ -10,7 +10,11 @@ class WeeklyWorkTime {
   get getDayOfWeek => dayOfWeekToString;
 
   WeeklyWorkTime(
-      {required this.startTime, required this.endTime, required this.isFake}) {
+      {required this.startTime, this.endTime, required this.isFake}) {
+    if (this.endTime == null) {
+      this.endTime =
+          DateTime(startTime.year, startTime.month, startTime.day, 0, 0);
+    }
     _dayOfWeek = startTime.weekday;
     _getDayOfWeek();
   }
@@ -48,6 +52,6 @@ class WeeklyWorkTime {
   }
 
   String getEndTime() {
-    return isFake == false ? DateFormat("HH:mm").format(endTime) : "00:00";
+    return isFake == false ? DateFormat("HH:mm").format(endTime!) : "00:00";
   }
 }

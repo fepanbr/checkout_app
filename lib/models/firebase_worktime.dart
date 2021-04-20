@@ -135,27 +135,29 @@ class FirebaseWorkTime {
     QuerySnapshot value = await worktimes
         .where('startDate',
             isGreaterThanOrEqualTo: DateFormat("yyyyMMdd").format(monday))
-        .where('endDate', isNotEqualTo: null)
         .get();
 
     value.docs.forEach((element) {
       if (element.exists) {
         print(element.data()!);
         var workTimeMap = element.data()!;
+        late DateTime startDate;
+        DateTime? endDate;
         String startDtData =
             workTimeMap['startDate'].toString().substring(0, 8) +
                 "T" +
                 workTimeMap['startDate'].toString().substring(8);
-        String endDtData = workTimeMap['endDate'].toString().substring(0, 8) +
-            "T" +
-            workTimeMap['endDate'].toString().substring(8);
-
-        DateTime startDate = DateTime.parse(startDtData);
-        DateTime endDate = DateTime.parse(endDtData);
-        if (workTimeMap.keys.contains('endDate')) {
-          workTimeList.add(WeeklyWorkTime(
-              endTime: endDate, startTime: startDate, isFake: false));
+        startDate = DateTime.parse(startDtData);
+        if (workTimeMap['endDate'] != null) {
+          String endDtData = workTimeMap['endDate'].toString().substring(0, 8) +
+              "T" +
+              workTimeMap['endDate'].toString().substring(8);
+          endDate = DateTime.parse(endDtData);
+        } else {
+          endDate = null;
         }
+        workTimeList.add(WeeklyWorkTime(
+            endTime: endDate, startTime: startDate, isFake: false));
       }
     });
 
@@ -165,7 +167,7 @@ class FirebaseWorkTime {
     for (var i = 0; i < 5 - length; i++) {
       workTimeList.add(WeeklyWorkTime(
           startTime: workTime.startTime.add(Duration(days: i + 1)),
-          endTime: workTime.endTime.add(Duration(days: i + 1)),
+          endTime: workTime.endTime!.add(Duration(days: i + 1)),
           isFake: true));
     }
 
