@@ -56,4 +56,15 @@ class StateMessage<T> {
 
     return '수고하셨습니다.\n총 근무시간: $hours시간 $minutes분';
   }
+
+  static String workOffTimeInFriday(DateTime startTime, Duration workTime) {
+    DateTime now = DateTime.now();
+    var year = now.year;
+    var month = now.month;
+    var day = now.day;
+    var endDate = startTime.add(Duration(minutes: 2400 - workTime.inMinutes));
+    return endDate.compareTo(DateTime(year, month, day, 16, 0)) <= 0
+        ? "4시에 퇴근 가능합니다! 고생했어요"
+        : '${endDate.hour}시 ${endDate.minute}분에 퇴근 가능합니다';
+  }
 }
