@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:songaree_worktime/constants.dart';
+import 'package:songaree_worktime/models/weeklyWork.dart';
 import 'package:songaree_worktime/models/work.dart';
 import 'package:songaree_worktime/screens/home_screen.dart';
 import 'package:songaree_worktime/screens/mgmt_worktime_screen.dart';
@@ -17,27 +18,35 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => Work(),
-        child: FutureBuilder(
-          future: Firebase.initializeApp(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text('firebase load fail'),
-              );
-            }
-            if (snapshot.connectionState == ConnectionState.done) {
-              return MaterialApp(
-                title: '송아리당뇨 출근앱',
-                theme: themeData(context),
-                debugShowCheckedModeBanner: false,
-                home: MyHomePage(),
-              );
-            }
-            return CircularProgressIndicator();
-          },
-        ));
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<Work>(
+          create: (context) => Work(),
+        ),
+        ChangeNotifierProvider<WeeklyWork>(
+          create: (context) => WeeklyWork(),
+        )
+      ],
+      child: FutureBuilder(
+        future: Firebase.initializeApp(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text('firebase load fail'),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            return MaterialApp(
+              title: '송아리당뇨 출근앱',
+              theme: themeData(context),
+              debugShowCheckedModeBanner: false,
+              home: MyHomePage(),
+            );
+          }
+          return CircularProgressIndicator();
+        },
+      ),
+    );
   }
 }
 

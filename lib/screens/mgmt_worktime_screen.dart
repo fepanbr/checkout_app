@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:songaree_worktime/constants.dart';
 import 'package:songaree_worktime/models/firebase_worktime.dart';
+import 'package:songaree_worktime/models/time_format.dart';
+import 'package:songaree_worktime/models/weeklyWork.dart';
 import 'package:songaree_worktime/models/weekly_worktime.dart';
 
 class MgmtWorkTimeScreen extends StatefulWidget {
@@ -9,6 +12,8 @@ class MgmtWorkTimeScreen extends StatefulWidget {
 }
 
 class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
+  FirebaseWorkTime _firebaseWorkTime = FirebaseWorkTime();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -20,47 +25,65 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
     print(weeklyWorkTimeList.length);
   }
 
+  Future<void> getWeeklyWork() async {
+    Duration workingTimeInWeekly = await _firebaseWorkTime.getWeeklyWorkLog();
+    TimeFormat timeFormat =
+        TimeFormat(Duration(minutes: 2400 - workingTimeInWeekly.inMinutes));
+    Provider.of<WeeklyWork>(context, listen: false)
+        .restTimeInWeeklyMsg(timeFormat);
+  }
+
   List<WeeklyWorkTime> weeklyWorkTimeList = [];
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        child: Column(
-          children: [
-            Container(
-              child: Center(
-                child: Text(
-                  '이번주 남은 근무시간: 22시간 20분',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ),
-              height: 120,
-            ),
-            FutureBuilder(
-              future: getWorkLogsInThisWeek(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return Container(
-                    width: double.infinity,
-                    height: 600,
-                    child: ListView.builder(
-                      padding: EdgeInsets.only(left: 40, right: 40),
-                      itemBuilder: (context, index) {
-                        return MgmtCard(
-                            weeklyWorkTime: weeklyWorkTimeList[index]);
-                      },
-                      itemCount: 5,
+    return FutureBuilder(
+      future: getWeeklyWork(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return SafeArea(
+            child: Container(
+              child: Column(
+                children: [
+                  Container(
+                    child: Center(
+                      child: Text(
+                        Provider.of<WeeklyWork>(context).restTimeInfo,
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  );
-                } else {
-                  return CircularProgressIndicator();
-                }
-              },
+                    height: 120,
+                  ),
+                  FutureBuilder(
+                    future: getWorkLogsInThisWeek(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return Container(
+                          width: double.infinity,
+                          height: 600,
+                          child: ListView.builder(
+                            padding: EdgeInsets.only(left: 40, right: 40),
+                            itemBuilder: (context, index) {
+                              return MgmtCard(
+                                  weeklyWorkTime: weeklyWorkTimeList[index]);
+                            },
+                            itemCount: 5,
+                          ),
+                        );
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
+          );
+        } else {
+          return CircularProgressIndicator();
+        }
+      },
     );
   }
 }
