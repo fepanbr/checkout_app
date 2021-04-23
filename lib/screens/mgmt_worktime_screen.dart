@@ -27,8 +27,14 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
 
   Future<void> getWeeklyWork() async {
     Duration workingTimeInWeekly = await _firebaseWorkTime.getWeeklyWorkLog();
-    TimeFormat timeFormat =
-        TimeFormat(Duration(minutes: 2400 - workingTimeInWeekly.inMinutes));
+    print("아무말");
+    print(workingTimeInWeekly.inMinutes);
+    Duration workingTime = workingTimeInWeekly.inMinutes > 2400
+        ? Duration(minutes: 0)
+        : Duration(minutes: 2400 - workingTimeInWeekly.inMinutes);
+    TimeFormat timeFormat = TimeFormat(workingTime);
+    print(timeFormat.hours);
+    print(timeFormat.minutes);
     Provider.of<WeeklyWork>(context, listen: false)
         .restTimeInWeeklyMsg(timeFormat);
   }

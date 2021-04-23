@@ -78,9 +78,6 @@ class FirebaseWorkTime {
   }
 
   Future<WorkTime?> writeEndTime(WorkTime workTime) async {
-    print(workTime.endTime);
-    print(workTime.startTime);
-    print(workTime.haveLunch);
     String currentDate = DateFormat("yyyyMMdd").format(workTime.startTime!);
     await worktimes.doc(currentDate).update({
       "endDate": DateFormat("yyyyMMddHHmm").format(workTime.endTime!),
@@ -120,8 +117,6 @@ class FirebaseWorkTime {
         .where((element) => element.data()!['workingTime'] != null)
         .forEach((element) {
       if (element.exists) {
-        print(
-            "workingTime: ${int.parse(element.data()!['workingTime'].toString())}");
         sumMinutes += int.parse(element.data()!['workingTime'].toString());
       }
     });

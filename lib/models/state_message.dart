@@ -62,7 +62,9 @@ class StateMessage<T> {
     var year = now.year;
     var month = now.month;
     var day = now.day;
-    var endDate = startTime.add(Duration(minutes: 2400 - workTime.inMinutes));
+    var endDate = startTime
+        .add(Duration(minutes: 2400 - workTime.inMinutes))
+        .add(Duration(hours: 1));
     return endDate.compareTo(DateTime(year, month, day, 16, 0)) <= 0
         ? "4시에 퇴근 가능합니다! 고생했어요"
         : '${endDate.hour}시 ${endDate.minute}분에 퇴근 가능합니다';
