@@ -19,7 +19,7 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
     print(weeklyWorkTimeList.length);
   }
 
-  void updateWorkTime() {}
+  void updateWorkTime(DateTime workTime) {}
 
   Future<void> getWeeklyWork() async {
     Duration workingTimeInWeekly = await _firebaseWorkTime.getWeeklyWorkLog();
@@ -68,7 +68,11 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
                             padding: EdgeInsets.only(left: 40, right: 40),
                             itemBuilder: (context, index) {
                               return MgmtCard(
-                                  weeklyWorkTime: weeklyWorkTimeList[index]);
+                                weeklyWorkTime: weeklyWorkTimeList[index],
+                                updateWorkTime: (DateTime value) {
+                                  updateWorkTime(value);
+                                },
+                              );
                             },
                             itemCount: 5,
                           ),
@@ -94,6 +98,7 @@ class MgmtCard extends StatelessWidget {
   const MgmtCard({
     Key? key,
     required this.weeklyWorkTime,
+    required Function updateWorkTime,
   }) : super(key: key);
 
   final WeeklyWorkTime weeklyWorkTime;
@@ -130,7 +135,7 @@ class MgmtCard extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: Text(
-                          '28',
+                          weeklyWorkTime.getDay,
                           style: TextStyle(fontSize: 32, color: kPrimaryColor),
                         ),
                       ),

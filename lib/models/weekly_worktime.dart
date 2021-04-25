@@ -8,6 +8,7 @@ class WeeklyWorkTime {
   bool isFake = false;
 
   get getDayOfWeek => dayOfWeekToString;
+  get getDay => DateFormat("dd").format(startTime);
 
   WeeklyWorkTime(
       {required this.startTime, this.endTime, required this.isFake}) {
