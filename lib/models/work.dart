@@ -49,7 +49,7 @@ class Work with ChangeNotifier {
 
       if (endTime == null) {
         // 출근 후
-        if (now.weekday == 5) {
+        if (now.weekday != 5) {
           _infoText =
               StateMessage.workingMsg(TimeFormat(now.difference(startTime)));
         } else {
