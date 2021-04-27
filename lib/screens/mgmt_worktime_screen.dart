@@ -16,7 +16,6 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
 
   getWorkLogsInThisWeek() async {
     weeklyWorkTimeList = await FirebaseWorkTime().getWorkLogsInThisWeek();
-    print(weeklyWorkTimeList.length);
   }
 
   void updateWorkTime(DateTime workTime) {}

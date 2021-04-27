@@ -132,39 +132,47 @@ class FirebaseWorkTime {
             isGreaterThanOrEqualTo: DateFormat("yyyyMMdd").format(monday))
         .get();
 
-    value.docs.forEach((element) {
-      if (element.exists) {
-        print(element.data()!);
-        var workTimeMap = element.data()!;
-        late DateTime startDate;
-        DateTime? endDate;
-        String startDtData =
-            workTimeMap['startDate'].toString().substring(0, 8) +
-                "T" +
-                workTimeMap['startDate'].toString().substring(8);
-        startDate = DateTime.parse(startDtData);
-        if (workTimeMap['endDate'] != null) {
-          String endDtData = workTimeMap['endDate'].toString().substring(0, 8) +
-              "T" +
-              workTimeMap['endDate'].toString().substring(8);
-          endDate = DateTime.parse(endDtData);
-        } else {
-          endDate = null;
+    if (value.docs.length > 0) {
+      value.docs.forEach((element) {
+        if (element.exists) {
+          print(element.data()!);
+          var workTimeMap = element.data()!;
+          late DateTime startDate;
+          DateTime? endDate;
+          String startDtData =
+              workTimeMap['startDate'].toString().substring(0, 8) +
+                  "T" +
+                  workTimeMap['startDate'].toString().substring(8);
+          startDate = DateTime.parse(startDtData);
+          if (workTimeMap['endDate'] != null) {
+            String endDtData =
+                workTimeMap['endDate'].toString().substring(0, 8) +
+                    "T" +
+                    workTimeMap['endDate'].toString().substring(8);
+            endDate = DateTime.parse(endDtData);
+          } else {
+            endDate = null;
+          }
+          workTimeList.add(WeeklyWorkTime(
+              endTime: endDate, startTime: startDate, isFake: false));
         }
+      });
+      var workTime = workTimeList.last;
+      var length = workTimeList.length;
+      for (var i = 0; i < 5 - length; i++) {
         workTimeList.add(WeeklyWorkTime(
-            endTime: endDate, startTime: startDate, isFake: false));
+            startTime: workTime.startTime.add(Duration(days: i + 1)),
+            endTime: workTime.endTime!.add(Duration(days: i + 1)),
+            isFake: true));
       }
-    });
+    } else {
+      for (var i = 0; i < 5; i++) {
+        workTimeList.add(
+            WeeklyWorkTime(startTime: monday, endTime: monday, isFake: true));
+      }
+    }
 
     print(workTimeList.length);
-    var workTime = workTimeList.last;
-    var length = workTimeList.length;
-    for (var i = 0; i < 5 - length; i++) {
-      workTimeList.add(WeeklyWorkTime(
-          startTime: workTime.startTime.add(Duration(days: i + 1)),
-          endTime: workTime.endTime!.add(Duration(days: i + 1)),
-          isFake: true));
-    }
 
     return workTimeList;
   }
