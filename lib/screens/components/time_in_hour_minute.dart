@@ -24,36 +24,34 @@ class _TimeInHourAndMinuteState extends State<TimeInHourAndMinute> {
     });
   }
 
-  String getHourString() {
-    if (_timeOfDay.hourOfPeriod == 0) {
-      return "12";
-    } else if (_timeOfDay.hourOfPeriod < 10) {
-      return "0${_timeOfDay.hourOfPeriod}";
-    } else {
-      return "${_timeOfDay.hourOfPeriod}";
-    }
-  }
+  // String getHourString() {
+  //   if (_timeOfDay.hourOfPeriod == 0) {
+  //     return "12";
+  //   } else if (_timeOfDay.hourOfPeriod < 10) {
+  //     return "0${_timeOfDay.hourOfPeriod}";
+  //   } else {
+  //     return "${_timeOfDay.hourOfPeriod}";
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    String _period = _timeOfDay.period == DayPeriod.am ? 'AM' : 'PM';
-    String _hour = getHourString();
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        RotatedBox(
-          quarterTurns: 35,
-          child: Text(
-            '$_period',
-            style: TextStyle(
-              color: kBodyTextColorLight,
-              fontSize: 20.0,
-            ),
-          ),
-        ),
+        // RotatedBox(
+        //   quarterTurns: 35,
+        //   child: Text(
+        //     '$_period',
+        //     style: TextStyle(
+        //       color: kBodyTextColorLight,
+        //       fontSize: 20.0,
+        //     ),
+        //   ),
+        // ),
         Text(
-          "$_hour:${_timeOfDay.minute < 10 ? "0" + _timeOfDay.minute.toString() : _timeOfDay.minute}",
+          "${_timeOfDay.hour}:${_timeOfDay.minute < 10 ? "0" + _timeOfDay.minute.toString() : _timeOfDay.minute}",
           style: TextStyle(
             color: kBodyTextColorLight,
             fontSize: 50.0,
