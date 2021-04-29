@@ -44,15 +44,18 @@ class WeeklyWorkTime {
     this.dayOfWeekToString = dayOfWeekToString;
   }
 
-  // String getDate() {
-  //   return startTime != null ? startTime.day.toString() : ;
-  // }
-
   String getStartTime() {
     return isFake == false ? DateFormat("HH:mm").format(startTime) : "00:00";
   }
 
   String getEndTime() {
     return isFake == false ? DateFormat("HH:mm").format(endTime!) : "00:00";
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "startTime": startTime,
+      "endTime": endTime,
+    };
   }
 }

@@ -100,13 +100,40 @@ class MgmtCard extends StatelessWidget {
 
   final WeeklyWorkTime weeklyWorkTime;
 
+  Future<void> selectedTime(BuildContext context, TimeOfDay timeOfDay) async {
+    var picked = await showTimePicker(
+      context: context,
+      initialTime: timeOfDay,
+      builder: (context, child) {
+        return TimePickerTheme(
+            data: TimePickerThemeData(
+                backgroundColor: Colors.white,
+                dialBackgroundColor: Colors.white,
+                dayPeriodBorderSide: BorderSide(width: 0, color: Colors.white),
+                dayPeriodTextColor: Colors.white,
+                hourMinuteTextColor: Colors.white,
+                hourMinuteTextStyle:
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                dialHandColor: kPrimaryColor),
+            child: child!);
+      },
+    );
+
+    if (picked != null && picked != timeOfDay) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.only(bottom: 30),
       elevation: 5,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          selectedTime(
+            context,
+            TimeOfDay.fromDateTime(weeklyWorkTime.startTime),
+          );
+        },
         child: Container(
           width: 200,
           height: 80,
