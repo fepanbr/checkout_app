@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:songaree_worktime/models/firebase_worktime.dart';
 import 'package:songaree_worktime/models/state_message.dart';
@@ -9,7 +10,8 @@ import 'package:songaree_worktime/models/worktime.dart';
 enum WorkState { beforeWork, working, afterWork }
 
 class Work with ChangeNotifier {
-  FirebaseWorkTime _firebaseWorkTime = FirebaseWorkTime();
+  FirebaseWorkTime? _firebaseWorkTime =
+      FirebaseAuth.instance.currentUser != null ? FirebaseWorkTime() : null;
 
   WorkState _state = WorkState.beforeWork;
   bool haveLunch = false;
@@ -24,12 +26,13 @@ class Work with ChangeNotifier {
   void initWork() async {
     isFirst = false;
     DateTime now = DateTime.now();
-    WorkTime? workLog = await _firebaseWorkTime.getWorkLog(now);
+    WorkTime? workLog = await _firebaseWorkTime!.getWorkLog(now);
 
     if (workLog == null) {
       _state = WorkState.beforeWork;
       haveLunch = false;
-      Duration workingTimeInWeekly = await _firebaseWorkTime.getWeeklyWorkLog();
+      Duration workingTimeInWeekly =
+          await _firebaseWorkTime!.getWeeklyWorkLog();
 
       percentage = workingTimeInWeekly.inMinutes / 2400 > 1
           ? 1
@@ -38,7 +41,8 @@ class Work with ChangeNotifier {
     } else {
       DateTime startTime = workLog.startTime!;
       DateTime? endTime = workLog.endTime;
-      Duration workingTimeInWeekly = await _firebaseWorkTime.getWeeklyWorkLog();
+      Duration workingTimeInWeekly =
+          await _firebaseWorkTime!.getWeeklyWorkLog();
 
       TimeFormat timeFormat =
           TimeFormat(Duration(minutes: workingTimeInWeekly.inMinutes));
@@ -71,7 +75,7 @@ class Work with ChangeNotifier {
 
   void startWork() async {
     DateTime now = DateTime.now();
-    _firebaseWorkTime.writeStartTime(
+    _firebaseWorkTime!.writeStartTime(
         WorkTime(startTime: now, endTime: null, haveLunch: false));
     _state = WorkState.working;
     _infoText = StateMessage.workMsg(now);
@@ -80,9 +84,9 @@ class Work with ChangeNotifier {
 
   void offWork() async {
     DateTime now = DateTime.now();
-    DateTime? startDate = await _firebaseWorkTime.getStartDate(now);
+    DateTime? startDate = await _firebaseWorkTime!.getStartDate(now);
     try {
-      var workTime = await _firebaseWorkTime.writeEndTime(
+      var workTime = await _firebaseWorkTime!.writeEndTime(
           WorkTime(startTime: startDate, endTime: now, haveLunch: haveLunch));
       TimeFormat timeFormat = TimeFormat(workTime!.workingTime);
       _infoText = StateMessage.offWorkMsg(timeFormat);
@@ -99,7 +103,7 @@ class Work with ChangeNotifier {
   }
 
   void getRestWeeklyWorkTime() async {
-    Duration workingTimeInWeekly = await _firebaseWorkTime.getWeeklyWorkLog();
+    Duration workingTimeInWeekly = await _firebaseWorkTime!.getWeeklyWorkLog();
     TimeFormat timeFormat =
         TimeFormat(Duration(minutes: 2400 - workingTimeInWeekly.inMinutes));
     print("percentage:${workingTimeInWeekly.inMinutes / 2400}");
@@ -113,7 +117,7 @@ class Work with ChangeNotifier {
 
     Timer timer = Timer(Duration(seconds: 3), () async {
       DateTime now = DateTime.now();
-      DateTime? startTime = await _firebaseWorkTime.getStartDate(now);
+      DateTime? startTime = await _firebaseWorkTime!.getStartDate(now);
       if (startTime == null) return;
       _infoText =
           StateMessage.workingMsg(TimeFormat(now.difference(startTime)));

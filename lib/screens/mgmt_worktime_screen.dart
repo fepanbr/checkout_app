@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:songaree_worktime/constants.dart';
@@ -5,6 +6,7 @@ import 'package:songaree_worktime/models/firebase_worktime.dart';
 import 'package:songaree_worktime/models/time_format.dart';
 import 'package:songaree_worktime/models/weeklyWork.dart';
 import 'package:songaree_worktime/models/weekly_worktime.dart';
+import 'package:songaree_worktime/models/worktime.dart';
 
 class MgmtWorkTimeScreen extends StatefulWidget {
   @override
@@ -12,16 +14,17 @@ class MgmtWorkTimeScreen extends StatefulWidget {
 }
 
 class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
-  FirebaseWorkTime _firebaseWorkTime = FirebaseWorkTime();
+  FirebaseWorkTime? _firebaseWorkTime =
+      FirebaseAuth.instance.currentUser != null ? FirebaseWorkTime() : null;
 
   getWorkLogsInThisWeek() async {
     weeklyWorkTimeList = await FirebaseWorkTime().getWorkLogsInThisWeek();
   }
 
-  void updateWorkTime(DateTime workTime) {}
+  void updateWorkTime(WorkTime workTime) {}
 
   Future<void> getWeeklyWork() async {
-    Duration workingTimeInWeekly = await _firebaseWorkTime.getWeeklyWorkLog();
+    Duration workingTimeInWeekly = await _firebaseWorkTime!.getWeeklyWorkLog();
     print(workingTimeInWeekly.inMinutes);
     Duration workingTime = workingTimeInWeekly.inMinutes > 2400
         ? Duration(minutes: 0)
@@ -67,9 +70,6 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
                             itemBuilder: (context, index) {
                               return MgmtCard(
                                 weeklyWorkTime: weeklyWorkTimeList[index],
-                                updateWorkTime: (DateTime value) {
-                                  updateWorkTime(value);
-                                },
                               );
                             },
                             itemCount: 5,
@@ -96,12 +96,9 @@ class MgmtCard extends StatelessWidget {
   const MgmtCard({
     Key? key,
     required this.weeklyWorkTime,
-    required Function updateWorkTime,
   }) : super(key: key);
 
   final WeeklyWorkTime weeklyWorkTime;
-
-  void updateWorkTime() {}
 
   @override
   Widget build(BuildContext context) {
@@ -109,9 +106,7 @@ class MgmtCard extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 30),
       elevation: 5,
       child: InkWell(
-        onTap: () {
-          updateWorkTime();
-        },
+        onTap: () {},
         child: Container(
           width: 200,
           height: 80,

@@ -184,4 +184,8 @@ class FirebaseWorkTime {
   DateTime findLastDateOfTheWeek(DateTime dateTime) {
     return dateTime.add(Duration(days: 5 - dateTime.weekday));
   }
+
+  updateWorkTime(DateTime dateTime) {
+    // worktimes.doc(DateFormat("yyyyMMdd").format(dateTime)).update({"startDate": })
+  }
 }
