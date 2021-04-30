@@ -100,7 +100,9 @@ class MgmtCard extends StatelessWidget {
 
   final WeeklyWorkTime weeklyWorkTime;
 
-  Future<void> selectedTime(BuildContext context, TimeOfDay timeOfDay) async {
+  Future<DateTime?> selectedTime(
+      BuildContext context, DateTime startTime) async {
+    TimeOfDay timeOfDay = TimeOfDay.fromDateTime(startTime);
     var picked = await showTimePicker(
       context: context,
       initialTime: timeOfDay,
@@ -119,7 +121,10 @@ class MgmtCard extends StatelessWidget {
       },
     );
 
-    if (picked != null && picked != timeOfDay) {}
+    if (picked != null && picked != timeOfDay) {
+      return DateTime(startTime.year, startTime.month, startTime.day,
+          picked.hour, picked.minute);
+    }
   }
 
   @override
@@ -128,11 +133,14 @@ class MgmtCard extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 30),
       elevation: 5,
       child: InkWell(
-        onTap: () {
-          selectedTime(
+        onTap: () async {
+          DateTime? pickedTime = await selectedTime(
             context,
-            TimeOfDay.fromDateTime(weeklyWorkTime.startTime),
+            weeklyWorkTime.startTime,
           );
+          if (pickedTime != null) {
+            FirebaseWorkTime().updateWorkTime(pickedTime);
+          }
         },
         child: Container(
           width: 200,
