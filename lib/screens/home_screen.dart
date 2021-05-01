@@ -29,13 +29,13 @@ class HomeScreen extends StatelessWidget {
         if (!snapshot.hasData) {
           return LoginScreen();
         } else {
-          users.doc(user!.uid).set({
-            "name": user!.displayName,
-            "phone": user!.phoneNumber,
-            "email": user!.email
-          }).then(
-            (value) => {print("user 저장됨")},
-          );
+          if (user != null) {
+            users.doc(user!.uid).set({
+              "name": user!.displayName,
+              "phone": user!.phoneNumber,
+              "email": user!.email
+            });
+          }
 
           return SafeArea(
             child: SizedBox(
