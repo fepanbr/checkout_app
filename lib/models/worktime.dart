@@ -5,9 +5,6 @@ class WorkTime {
   late Duration workingTime;
 
   WorkTime({required this.startTime, this.endTime, required this.haveLunch}) {
-    print(startTime);
-    print(endTime);
-    print(haveLunch);
     if (haveLunch == true) {
       var duration = endTime!.difference(startTime!);
       workingTime = duration.isNegative ? throw Error() : duration;

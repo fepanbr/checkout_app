@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class WeeklyWorkTime {
@@ -52,10 +53,22 @@ class WeeklyWorkTime {
     return isFake == false ? DateFormat("HH:mm").format(endTime!) : "00:00";
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toTimeOfDayMap() {
+    TimeOfDay startTimetoTimeOfDay = TimeOfDay.fromDateTime(startTime);
+    late TimeOfDay? endTimetoTimeOfDay;
+    if (endTime != null) {
+      endTimetoTimeOfDay = TimeOfDay.fromDateTime(endTime!);
+    } else {
+      endTimetoTimeOfDay = null;
+    }
     return {
-      "startTime": startTime,
-      "endTime": endTime,
+      "startTime": startTimetoTimeOfDay,
+      "endTime": endTimetoTimeOfDay,
     };
+  }
+
+  DateTime fromTimOfDay(TimeOfDay timeOfDay) {
+    return DateTime(startTime.year, startTime.month, startTime.day,
+        timeOfDay.hour, timeOfDay.minute);
   }
 }

@@ -97,15 +97,15 @@ class MgmtCard extends StatelessWidget {
     Key? key,
     required this.weeklyWorkTime,
   }) : super(key: key);
-
   final WeeklyWorkTime weeklyWorkTime;
 
-  Future<DateTime?> selectedTime(
-      BuildContext context, DateTime startTime) async {
-    TimeOfDay timeOfDay = TimeOfDay.fromDateTime(startTime);
-    var picked = await showTimePicker(
+  Future<WeeklyWorkTime?> selectedTime(
+      BuildContext context, WeeklyWorkTime workTime) async {
+    var timeOfDayMap = workTime.toTimeOfDayMap();
+    late TimeOfDay? pickedEndTime;
+    var pickedStartTime = await showTimePicker(
       context: context,
-      initialTime: timeOfDay,
+      initialTime: timeOfDayMap["startTime"],
       builder: (context, child) {
         return TimePickerTheme(
             data: TimePickerThemeData(
@@ -120,10 +120,30 @@ class MgmtCard extends StatelessWidget {
             child: child!);
       },
     );
+    if (timeOfDayMap["endTime"] != null) {
+      pickedEndTime = await showTimePicker(
+        context: context,
+        initialTime: timeOfDayMap["endTime"],
+        builder: (context, child) {
+          return TimePickerTheme(
+              data: TimePickerThemeData(
+                  backgroundColor: Colors.white,
+                  dialBackgroundColor: Colors.white,
+                  dayPeriodBorderSide:
+                      BorderSide(width: 0, color: Colors.white),
+                  dayPeriodTextColor: Colors.white,
+                  hourMinuteTextColor: Colors.white,
+                  hourMinuteTextStyle:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                  dialHandColor: kPrimaryColor),
+              child: child!);
+        },
+      );
+    }
 
-    if (picked != null && picked != timeOfDay) {
-      return DateTime(startTime.year, startTime.month, startTime.day,
-          picked.hour, picked.minute);
+    if (pickedStartTime != null) {
+      // return DateTime(startTime.year, startTime.month, startTime.day,
+      //     pickedStartTime.hour, pickedStartTime.minute);
     }
   }
 
@@ -134,13 +154,13 @@ class MgmtCard extends StatelessWidget {
       elevation: 5,
       child: InkWell(
         onTap: () async {
-          DateTime? pickedTime = await selectedTime(
-            context,
-            weeklyWorkTime.startTime,
-          );
-          if (pickedTime != null) {
-            FirebaseWorkTime().updateWorkTime(pickedTime);
-          }
+          // DateTime? pickedTime = await selectedTime(
+          //   context,
+          //   weeklyWorkTime.startTime,
+          // );
+          // if (pickedTime != null) {
+          //   FirebaseWorkTime().updateWorkTime(pickedTime);
+          // }
         },
         child: Container(
           width: 200,

@@ -186,8 +186,8 @@ class FirebaseWorkTime {
   }
 
   updateWorkTime(DateTime dateTime) {
-    // worktimes
-    //     .doc(DateFormat("yyyyMMdd").format(dateTime))
-    //     .update({"startDate": dateTime});
+    worktimes
+        .doc(DateFormat("yyyyMMdd").format(dateTime))
+        .update({"startDate": dateTime});
   }
 }
