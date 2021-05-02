@@ -5,14 +5,14 @@ import 'package:songaree_worktime/models/weekly_worktime.dart';
 import 'package:songaree_worktime/models/worktime.dart';
 
 class FirebaseWorkTime {
-  CollectionReference worktimes = FirebaseFirestore.instance
+  CollectionReference _worktimes = FirebaseFirestore.instance
       .collection('users')
       .doc(FirebaseAuth.instance.currentUser!.uid)
       .collection('worktime');
 
   Future<DateTime?> getStartDate(DateTime time) async {
     DocumentSnapshot documentSnapshot =
-        await worktimes.doc(DateFormat("yyyyMMdd").format(time)).get();
+        await _worktimes.doc(DateFormat("yyyyMMdd").format(time)).get();
     Map<String, dynamic>? data = documentSnapshot.data();
     String? startDtData;
     if (data == null) {
@@ -28,7 +28,7 @@ class FirebaseWorkTime {
 
   Future<WorkTime?> getWorkLog(DateTime time) async {
     DocumentSnapshot documentSnapshot =
-        await worktimes.doc(DateFormat("yyyyMMdd").format(time)).get();
+        await _worktimes.doc(DateFormat("yyyyMMdd").format(time)).get();
     Map<String, dynamic>? data = documentSnapshot.data();
     String? startDtData;
     String? endDtData;
@@ -55,13 +55,13 @@ class FirebaseWorkTime {
   }
 
   Future<bool> writeStartTime(WorkTime worktime) async {
-    QuerySnapshot value = await worktimes
+    QuerySnapshot value = await _worktimes
         .where('startDate',
             isEqualTo: DateFormat("yyyyMMdd").format(worktime.startTime!))
         .get();
 
     if (value.docs.length == 0) {
-      worktimes.doc(DateFormat("yyyyMMdd").format(worktime.startTime!)).set(
+      _worktimes.doc(DateFormat("yyyyMMdd").format(worktime.startTime!)).set(
         {
           "startDate": DateFormat("yyyyMMddHHmm").format(worktime.startTime!),
         },
@@ -79,12 +79,12 @@ class FirebaseWorkTime {
 
   Future<WorkTime?> writeEndTime(WorkTime workTime) async {
     String currentDate = DateFormat("yyyyMMdd").format(workTime.startTime!);
-    await worktimes.doc(currentDate).update({
+    await _worktimes.doc(currentDate).update({
       "endDate": DateFormat("yyyyMMddHHmm").format(workTime.endTime!),
       "haveLunch": workTime.haveLunch,
       "workingTime": workTime.workingTime.inMinutes,
     });
-    DocumentSnapshot documentSnapshot = await worktimes.doc(currentDate).get();
+    DocumentSnapshot documentSnapshot = await _worktimes.doc(currentDate).get();
     if (documentSnapshot.exists) {
       Map<String, dynamic>? data = documentSnapshot.data();
       String startDtData = data!['startDate'].toString().substring(0, 8) +
@@ -107,7 +107,7 @@ class FirebaseWorkTime {
   Future<Duration> getWeeklyWorkLog() async {
     DateTime currentDate = DateTime.now();
     DateTime monday = findFirstDateOfTheWeek(currentDate);
-    QuerySnapshot value = await worktimes
+    QuerySnapshot value = await _worktimes
         .where('startDate',
             isGreaterThanOrEqualTo: DateFormat("yyyyMMdd").format(monday))
         .get();
@@ -127,7 +127,7 @@ class FirebaseWorkTime {
     List<WeeklyWorkTime> workTimeList = [];
     DateTime currentDate = DateTime.now();
     DateTime monday = findFirstDateOfTheWeek(currentDate);
-    QuerySnapshot value = await worktimes
+    QuerySnapshot value = await _worktimes
         .where('startDate',
             isGreaterThanOrEqualTo: DateFormat("yyyyMMdd").format(monday))
         .get();
@@ -186,7 +186,7 @@ class FirebaseWorkTime {
   }
 
   updateWorkTime(DateTime dateTime) {
-    worktimes
+    _worktimes
         .doc(DateFormat("yyyyMMdd").format(dateTime))
         .update({"startDate": dateTime});
   }

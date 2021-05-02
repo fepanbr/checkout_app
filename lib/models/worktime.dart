@@ -1,34 +1,66 @@
 class WorkTime {
-  static Duration lunchTime = Duration(hours: 1);
+  static Duration _lunchTime = Duration(hours: 1);
+  static Duration _offsetWorkTime = Duration(hours: 1);
 
   DateTime startTime;
   DateTime? endTime;
-  bool haveLunch = false;
-  late Duration workingTime;
+  late bool haveLunch;
+  late int? workingTime;
 
-  WorkTime({required this.startTime, this.endTime, required this.haveLunch}) {
-    if (haveLunch == true) {
-      var duration = endTime!.difference(startTime);
-      workingTime = duration.isNegative ? throw Error() : duration;
+  WorkTime(
+      {required this.startTime,
+      required this.endTime,
+      required this.haveLunch,
+      this.workingTime}) {
+    this._setLunch(haveLunch);
+    this._calculateTodayWokingTime();
+    this._setEndTime();
+  }
+
+  static WorkTime fromMap(Map<String, dynamic> workTimeMap) {
+    String startTime = workTimeMap["startDate"];
+    String endTime = workTimeMap["endDate"];
+    bool haveLunch = workTimeMap["haveLunch"];
+    int workingTime = workTimeMap["workingTime"];
+    return WorkTime(
+        startTime: _toDateTime(startTime),
+        endTime: _toDateTime(endTime),
+        haveLunch: haveLunch,
+        workingTime: workingTime);
+  }
+
+  void _calculateTodayWokingTime() {
+    if (endTime != null) {
+      workingTime = haveLunch
+          ? endTime!
+              .subtract(_offsetWorkTime)
+              .add(_lunchTime)
+              .difference(startTime)
+              .inMinutes
+          : endTime!.subtract(_offsetWorkTime).difference(startTime).inMinutes;
     } else {
-      if (endTime != null) {
-        var duration =
-            endTime!.subtract(Duration(hours: 1)).difference(startTime);
-        workingTime = duration.isNegative ? throw Error() : duration;
-      }
+      workingTime = 0;
     }
   }
 
-  Duration calculateTodayWokingTime() {
-    if (endTime != null) {
-      return haveLunch
-          ? endTime!
-              .subtract(Duration(hours: 1))
-              .add(lunchTime)
-              .difference(startTime)
-          : endTime!.subtract(Duration(hours: 1)).difference(startTime);
+  void _setEndTime() {
+    if (endTime == null) {
+      endTime =
+          DateTime(startTime.year, startTime.month, startTime.day, 0, 0, 0);
     } else {
-      return throw 'endTime is not exist';
+      endTime = endTime;
     }
+  }
+
+  void _setLunch(bool? lunch) {
+    if (haveLunch == null)
+      haveLunch = false;
+    else
+      haveLunch = lunch!;
+  }
+
+  static DateTime _toDateTime(String time) {
+    var timeData = time.substring(0, 8) + "T" + time.substring(8);
+    return DateTime.parse(timeData);
   }
 }

@@ -4,20 +4,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:songaree_worktime/models/firebase_worktime.dart';
 import 'package:songaree_worktime/models/state_message.dart';
-import 'package:songaree_worktime/models/time_format.dart';
 import 'package:songaree_worktime/models/worktime.dart';
 
 enum WorkState { beforeWork, working, afterWork }
 
 class Work with ChangeNotifier {
-  FirebaseWorkTime? _firebaseWorkTime =
-      FirebaseAuth.instance.currentUser != null ? FirebaseWorkTime() : null;
+  // FirebaseWorkTime? _firebaseWorkTime =
+  //     FirebaseAuth.instance.currentUser != null ? FirebaseWorkTime() : null;
 
   WorkState _state = WorkState.beforeWork;
   bool haveLunch = false;
 
   bool isFirst = true;
-  String _infoText = '';
+  // String _infoText = '';
   double percentage = 0;
 
   String get getStateText => _infoText;
