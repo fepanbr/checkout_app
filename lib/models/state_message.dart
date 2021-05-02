@@ -1,5 +1,3 @@
-import 'package:songaree_worktime/models/time_format.dart';
-
 class StateMessage<T> {
   static String offWorkMsg(TimeFormat timeFormat) {
     String hours = timeFormat.hours.toString().length == 1
