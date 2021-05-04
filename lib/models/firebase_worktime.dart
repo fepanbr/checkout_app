@@ -82,7 +82,7 @@ class FirebaseWorkTime {
     await _worktimes.doc(currentDate).update({
       "endDate": DateFormat("yyyyMMddHHmm").format(workTime.endTime!),
       "haveLunch": workTime.haveLunch,
-      "workingTime": workTime.workingTime.inMinutes,
+      "workingTime": workTime.workingTime,
     });
     DocumentSnapshot documentSnapshot = await _worktimes.doc(currentDate).get();
     if (documentSnapshot.exists) {
