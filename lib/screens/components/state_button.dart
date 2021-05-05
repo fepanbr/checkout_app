@@ -21,7 +21,7 @@ class _StateButtonState extends State<StateButton> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          _work.getStateText,
+          _work.infoMessage,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20.0,

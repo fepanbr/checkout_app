@@ -4,8 +4,8 @@ class WorkTime {
 
   DateTime startTime;
   DateTime? endTime;
-  late bool haveLunch;
-  late int? workingTime;
+  bool haveLunch;
+  int? workingTime;
 
   WorkTime(
       {required this.startTime,
@@ -19,14 +19,22 @@ class WorkTime {
 
   static WorkTime fromMap(Map<String, dynamic> workTimeMap) {
     String startTime = workTimeMap["startDate"];
-    String endTime = workTimeMap["endDate"];
-    bool haveLunch = workTimeMap["haveLunch"];
-    int workingTime = workTimeMap["workingTime"];
+    String? endTime = workTimeMap["endDate"];
+    bool haveLunch =
+        workTimeMap["haveLunch"] ? workTimeMap["haveLunch"] : false;
+    int? workingTime = workTimeMap["workingTime"];
     return WorkTime(
-        startTime: _toDateTime(startTime),
-        endTime: _toDateTime(endTime),
-        haveLunch: haveLunch,
-        workingTime: workingTime);
+      startTime: _toDateTime(startTime)!,
+      endTime: _toDateTime(endTime),
+      haveLunch: haveLunch,
+      workingTime: workingTime,
+    );
+  }
+
+  static DateTime? _toDateTime(String? time) {
+    if (time == null) return null;
+    var timeData = time.substring(0, 8) + "T" + time.substring(8);
+    return DateTime.parse(timeData);
   }
 
   void _calculateTodayWokingTime() {
@@ -53,14 +61,9 @@ class WorkTime {
   }
 
   void _setLunch(bool? lunch) {
-    if (haveLunch == null)
+    if (lunch == null)
       haveLunch = false;
     else
-      haveLunch = lunch!;
-  }
-
-  static DateTime _toDateTime(String time) {
-    var timeData = time.substring(0, 8) + "T" + time.substring(8);
-    return DateTime.parse(timeData);
+      haveLunch = lunch;
   }
 }

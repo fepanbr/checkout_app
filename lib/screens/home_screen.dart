@@ -19,9 +19,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Work _work = Provider.of<Work>(context);
-    if (_work.isFirst) {
-      _work.initWork();
-    }
+    _work.initWork();
     SizeConfig().init(context);
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),

@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:songaree_worktime/constants.dart';
 import 'package:songaree_worktime/models/firebase_worktime.dart';
-import 'package:songaree_worktime/models/weeklyWork.dart';
 import 'package:songaree_worktime/models/weekly_worktime.dart';
 import 'package:songaree_worktime/models/worktime.dart';
 
@@ -13,9 +11,6 @@ class MgmtWorkTimeScreen extends StatefulWidget {
 }
 
 class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
-  FirebaseWorkTime? _firebaseWorkTime =
-      FirebaseAuth.instance.currentUser != null ? FirebaseWorkTime() : null;
-
   getWorkLogsInThisWeek() async {
     weeklyWorkTimeList = await FirebaseWorkTime().getWorkLogsInThisWeek();
   }
@@ -23,16 +18,17 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
   void updateWorkTime(WorkTime workTime) {}
 
   Future<void> getWeeklyWork() async {
-    Duration workingTimeInWeekly = await _firebaseWorkTime!.getWeeklyWorkLog();
-    print(workingTimeInWeekly.inMinutes);
-    Duration workingTime = workingTimeInWeekly.inMinutes > 2400
-        ? Duration(minutes: 0)
-        : Duration(minutes: 2400 - workingTimeInWeekly.inMinutes);
-    TimeFormat timeFormat = TimeFormat(workingTime);
-    print(timeFormat.hours);
-    print(timeFormat.minutes);
-    Provider.of<WeeklyWork>(context, listen: false)
-        .restTimeInWeeklyMsg(timeFormat);
+    // Duration workingTimeInWeekly =
+    //     await _firebaseWorkTime!.getWeeklyWorkTimes();
+    // print(workingTimeInWeekly.inMinutes);
+    // Duration workingTime = workingTimeInWeekly.inMinutes > 2400
+    //     ? Duration(minutes: 0)
+    //     : Duration(minutes: 2400 - workingTimeInWeekly.inMinutes);
+    // TimeFormat timeFormat = TimeFormat(workingTime);
+    // print(timeFormat.hours);
+    // print(timeFormat.minutes);
+    // Provider.of<WeeklyWork>(context, listen: false)
+    //     .restTimeInWeeklyMsg(timeFormat);
   }
 
   List<WeeklyWorkTime> weeklyWorkTimeList = [];
@@ -50,7 +46,8 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
                   Container(
                     child: Center(
                       child: Text(
-                        Provider.of<WeeklyWork>(context).restTimeInfo,
+                        'text',
+                        // Provider.of<WeeklyWork>(context).restTimeInfo,
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),

@@ -10,19 +10,14 @@ class FirebaseWorkTime {
       .doc(FirebaseAuth.instance.currentUser!.uid)
       .collection('worktime');
 
-  Future<DateTime?> getStartDate(DateTime time) async {
+  Future<WorkTime?> getStartTime(DateTime time) async {
     DocumentSnapshot documentSnapshot =
         await _worktimes.doc(DateFormat("yyyyMMdd").format(time)).get();
     Map<String, dynamic>? data = documentSnapshot.data();
-    String? startDtData;
     if (data == null) {
       return null;
     } else {
-      startDtData = data['startDate'].toString().substring(0, 8) +
-          "T" +
-          data['startDate'].toString().substring(8);
-      DateTime startTime = DateTime.parse(startDtData);
-      return startTime;
+      return WorkTime.fromMap(data);
     }
   }
 
@@ -30,40 +25,22 @@ class FirebaseWorkTime {
     DocumentSnapshot documentSnapshot =
         await _worktimes.doc(DateFormat("yyyyMMdd").format(time)).get();
     Map<String, dynamic>? data = documentSnapshot.data();
-    String? startDtData;
-    String? endDtData;
-    if (data == null) {
+    if (data == null)
       return null;
-    } else {
-      startDtData = data['startDate'].toString().substring(0, 8) +
-          "T" +
-          data['startDate'].toString().substring(8);
-      DateTime startTime = DateTime.parse(startDtData);
-
-      if (data['endDate'] != null) {
-        endDtData = data['endDate'].toString().substring(0, 8) +
-            "T" +
-            data['endDate'].toString().substring(8);
-        DateTime endTime = DateTime.parse(endDtData);
-        bool haveLunch = data['haveLunch'];
-        return WorkTime(
-            startTime: startTime, endTime: endTime, haveLunch: haveLunch);
-      } else {
-        return WorkTime(startTime: startTime, endTime: null, haveLunch: false);
-      }
-    }
+    else
+      return WorkTime.fromMap(data);
   }
 
   Future<bool> writeStartTime(WorkTime worktime) async {
     QuerySnapshot value = await _worktimes
         .where('startDate',
-            isEqualTo: DateFormat("yyyyMMdd").format(worktime.startTime!))
+            isEqualTo: DateFormat("yyyyMMdd").format(worktime.startTime))
         .get();
 
     if (value.docs.length == 0) {
-      _worktimes.doc(DateFormat("yyyyMMdd").format(worktime.startTime!)).set(
+      _worktimes.doc(DateFormat("yyyyMMdd").format(worktime.startTime)).set(
         {
-          "startDate": DateFormat("yyyyMMddHHmm").format(worktime.startTime!),
+          "startDate": DateFormat("yyyyMMddHHmm").format(worktime.startTime),
         },
       ).then(
         (value) {
@@ -77,34 +54,16 @@ class FirebaseWorkTime {
     return false;
   }
 
-  Future<WorkTime?> writeEndTime(WorkTime workTime) async {
-    String currentDate = DateFormat("yyyyMMdd").format(workTime.startTime!);
+  Future<void> writeEndTime(WorkTime workTime) async {
+    String currentDate = DateFormat("yyyyMMdd").format(workTime.startTime);
     await _worktimes.doc(currentDate).update({
       "endDate": DateFormat("yyyyMMddHHmm").format(workTime.endTime!),
       "haveLunch": workTime.haveLunch,
       "workingTime": workTime.workingTime,
     });
-    DocumentSnapshot documentSnapshot = await _worktimes.doc(currentDate).get();
-    if (documentSnapshot.exists) {
-      Map<String, dynamic>? data = documentSnapshot.data();
-      String startDtData = data!['startDate'].toString().substring(0, 8) +
-          "T" +
-          data['startDate'].toString().substring(8);
-      String endDtData = data['endDate'].toString().substring(0, 8) +
-          "T" +
-          data['endDate'].toString().substring(8);
-      bool haveLunch = data['haveLunch'];
-      DateTime startDate = DateTime.parse(startDtData);
-      DateTime endDate = DateTime.parse(endDtData);
-
-      return WorkTime(
-          startTime: startDate, endTime: endDate, haveLunch: haveLunch);
-    } else {
-      return null;
-    }
   }
 
-  Future<Duration> getWeeklyWorkLog() async {
+  Future<Duration> getWeeklyWorkTimes() async {
     DateTime currentDate = DateTime.now();
     DateTime monday = findFirstDateOfTheWeek(currentDate);
     QuerySnapshot value = await _worktimes
