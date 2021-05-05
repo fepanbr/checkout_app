@@ -22,13 +22,17 @@ class FirebaseWorkTime {
   }
 
   Future<WorkTime?> getWorkLog(DateTime time) async {
-    DocumentSnapshot documentSnapshot =
-        await _worktimes.doc(DateFormat("yyyyMMdd").format(time)).get();
-    Map<String, dynamic>? data = documentSnapshot.data();
-    if (data == null)
+    try {
+      DocumentSnapshot documentSnapshot =
+          await _worktimes.doc(DateFormat("yyyyMMdd").format(time)).get();
+      Map<String, dynamic>? data = documentSnapshot.data();
+      if (data == null)
+        return null;
+      else
+        return WorkTime.fromMap(data);
+    } catch (e) {
       return null;
-    else
-      return WorkTime.fromMap(data);
+    }
   }
 
   Future<bool> writeStartTime(WorkTime worktime) async {
