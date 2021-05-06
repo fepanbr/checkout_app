@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
-import 'package:songaree_worktime/models/weekly_worktime.dart';
 import 'package:songaree_worktime/models/worktime.dart';
 
 class FirebaseWorkTime {
@@ -86,8 +85,8 @@ class FirebaseWorkTime {
     return Duration(minutes: sumMinutes);
   }
 
-  Future<List<WeeklyWorkTime>> getWorkLogsInThisWeek() async {
-    List<WeeklyWorkTime> workTimeList = [];
+  Future<List<WorkTime>> getWorkLogsInThisWeek() async {
+    List<WorkTime> workTimeList = [];
     DateTime currentDate = DateTime.now();
     DateTime monday = findFirstDateOfTheWeek(currentDate);
     QuerySnapshot value = await _worktimes
@@ -95,44 +94,23 @@ class FirebaseWorkTime {
             isGreaterThanOrEqualTo: DateFormat("yyyyMMdd").format(monday))
         .get();
 
-    if (value.docs.length > 0) {
-      value.docs.forEach((element) {
-        if (element.exists) {
-          print(element.data()!);
-          var workTimeMap = element.data()!;
-          late DateTime startDate;
-          DateTime? endDate;
-          String startDtData =
-              workTimeMap['startDate'].toString().substring(0, 8) +
-                  "T" +
-                  workTimeMap['startDate'].toString().substring(8);
-          startDate = DateTime.parse(startDtData);
-          if (workTimeMap['endDate'] != null) {
-            String endDtData =
-                workTimeMap['endDate'].toString().substring(0, 8) +
-                    "T" +
-                    workTimeMap['endDate'].toString().substring(8);
-            endDate = DateTime.parse(endDtData);
-          } else {
-            endDate = null;
-          }
-          workTimeList.add(WeeklyWorkTime(
-              endTime: endDate, startTime: startDate, isFake: false));
-        }
-      });
-      var workTime = workTimeList.last;
-      var length = workTimeList.length;
-      for (var i = 0; i < 5 - length; i++) {
-        workTimeList.add(WeeklyWorkTime(
-            startTime: workTime.startTime.add(Duration(days: i + 1)),
-            endTime: workTime.endTime!.add(Duration(days: i + 1)),
-            isFake: true));
+    value.docs.forEach((element) {
+      if (element.exists) {
+        print(element.data()!);
+        workTimeList.add(WorkTime.fromMap(element.data()!));
       }
-    } else {
-      for (var i = 0; i < 5; i++) {
-        workTimeList.add(
-            WeeklyWorkTime(startTime: monday, endTime: monday, isFake: true));
-      }
+    });
+    var startDateAtLastWorkTime = workTimeList.last.startTime;
+    var length = workTimeList.length;
+    for (var i = 1; i < 5 - length + 1; i++) {
+      var fakeDateTime = DateTime(startDateAtLastWorkTime.year,
+          startDateAtLastWorkTime.month, startDateAtLastWorkTime.day + i, 0, 0);
+
+      workTimeList.add(WorkTime(
+          startTime: fakeDateTime,
+          endTime: fakeDateTime,
+          haveLunch: false,
+          workingTime: 0));
     }
 
     print(workTimeList.length);

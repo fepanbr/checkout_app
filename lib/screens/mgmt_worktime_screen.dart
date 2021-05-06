@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:songaree_worktime/constants.dart';
 import 'package:songaree_worktime/models/firebase_worktime.dart';
-import 'package:songaree_worktime/models/weekly_worktime.dart';
+import 'package:songaree_worktime/models/work.dart';
 import 'package:songaree_worktime/models/worktime.dart';
 
 class MgmtWorkTimeScreen extends StatefulWidget {
@@ -11,6 +12,7 @@ class MgmtWorkTimeScreen extends StatefulWidget {
 }
 
 class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
+  List<WorkTime> weeklyWorkTimeList = [];
   getWorkLogsInThisWeek() async {
     weeklyWorkTimeList = await FirebaseWorkTime().getWorkLogsInThisWeek();
   }
@@ -18,20 +20,9 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
   void updateWorkTime(WorkTime workTime) {}
 
   Future<void> getWeeklyWork() async {
-    // Duration workingTimeInWeekly =
-    //     await _firebaseWorkTime!.getWeeklyWorkTimes();
-    // print(workingTimeInWeekly.inMinutes);
-    // Duration workingTime = workingTimeInWeekly.inMinutes > 2400
-    //     ? Duration(minutes: 0)
-    //     : Duration(minutes: 2400 - workingTimeInWeekly.inMinutes);
-    // TimeFormat timeFormat = TimeFormat(workingTime);
-    // print(timeFormat.hours);
-    // print(timeFormat.minutes);
-    // Provider.of<WeeklyWork>(context, listen: false)
-    //     .restTimeInWeeklyMsg(timeFormat);
+    getWorkLogsInThisWeek();
+    Provider.of<Work>(context, listen: false).getRestWeeklyWorkTime();
   }
-
-  List<WeeklyWorkTime> weeklyWorkTimeList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +37,7 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
                   Container(
                     child: Center(
                       child: Text(
-                        'text',
+                        Provider.of<Work>(context).infoMessage,
                         // Provider.of<WeeklyWork>(context).restTimeInfo,
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
@@ -65,7 +56,7 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
                             padding: EdgeInsets.only(left: 40, right: 40),
                             itemBuilder: (context, index) {
                               return MgmtCard(
-                                weeklyWorkTime: weeklyWorkTimeList[index],
+                                workTime: weeklyWorkTimeList[index],
                               );
                             },
                             itemCount: 5,
@@ -91,57 +82,57 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
 class MgmtCard extends StatelessWidget {
   const MgmtCard({
     Key? key,
-    required this.weeklyWorkTime,
+    required this.workTime,
   }) : super(key: key);
-  final WeeklyWorkTime weeklyWorkTime;
+  final WorkTime workTime;
 
-  Future<WeeklyWorkTime?> selectedTime(
-      BuildContext context, WeeklyWorkTime workTime) async {
-    var timeOfDayMap = workTime.toTimeOfDayMap();
-    late TimeOfDay? pickedEndTime;
-    var pickedStartTime = await showTimePicker(
-      context: context,
-      initialTime: timeOfDayMap["startTime"],
-      builder: (context, child) {
-        return TimePickerTheme(
-            data: TimePickerThemeData(
-                backgroundColor: Colors.white,
-                dialBackgroundColor: Colors.white,
-                dayPeriodBorderSide: BorderSide(width: 0, color: Colors.white),
-                dayPeriodTextColor: Colors.white,
-                hourMinuteTextColor: Colors.white,
-                hourMinuteTextStyle:
-                    TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-                dialHandColor: kPrimaryColor),
-            child: child!);
-      },
-    );
-    if (timeOfDayMap["endTime"] != null) {
-      pickedEndTime = await showTimePicker(
-        context: context,
-        initialTime: timeOfDayMap["endTime"],
-        builder: (context, child) {
-          return TimePickerTheme(
-              data: TimePickerThemeData(
-                  backgroundColor: Colors.white,
-                  dialBackgroundColor: Colors.white,
-                  dayPeriodBorderSide:
-                      BorderSide(width: 0, color: Colors.white),
-                  dayPeriodTextColor: Colors.white,
-                  hourMinuteTextColor: Colors.white,
-                  hourMinuteTextStyle:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-                  dialHandColor: kPrimaryColor),
-              child: child!);
-        },
-      );
-    }
+  // Future<WeeklyWorkTime?> selectedTime(
+  //     BuildContext context, WeeklyWorkTime workTime) async {
+  //   var timeOfDayMap = workTime.toTimeOfDayMap();
+  //   late TimeOfDay? pickedEndTime;
+  //   var pickedStartTime = await showTimePicker(
+  //     context: context,
+  //     initialTime: timeOfDayMap["startTime"],
+  //     builder: (context, child) {
+  //       return TimePickerTheme(
+  //           data: TimePickerThemeData(
+  //               backgroundColor: Colors.white,
+  //               dialBackgroundColor: Colors.white,
+  //               dayPeriodBorderSide: BorderSide(width: 0, color: Colors.white),
+  //               dayPeriodTextColor: Colors.white,
+  //               hourMinuteTextColor: Colors.white,
+  //               hourMinuteTextStyle:
+  //                   TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+  //               dialHandColor: kPrimaryColor),
+  //           child: child!);
+  //     },
+  //   );
+  //   if (timeOfDayMap["endTime"] != null) {
+  //     pickedEndTime = await showTimePicker(
+  //       context: context,
+  //       initialTime: timeOfDayMap["endTime"],
+  //       builder: (context, child) {
+  //         return TimePickerTheme(
+  //             data: TimePickerThemeData(
+  //                 backgroundColor: Colors.white,
+  //                 dialBackgroundColor: Colors.white,
+  //                 dayPeriodBorderSide:
+  //                     BorderSide(width: 0, color: Colors.white),
+  //                 dayPeriodTextColor: Colors.white,
+  //                 hourMinuteTextColor: Colors.white,
+  //                 hourMinuteTextStyle:
+  //                     TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+  //                 dialHandColor: kPrimaryColor),
+  //             child: child!);
+  //       },
+  //     );
+  //   }
 
-    if (pickedStartTime != null) {
-      // return DateTime(startTime.year, startTime.month, startTime.day,
-      //     pickedStartTime.hour, pickedStartTime.minute);
-    }
-  }
+  //   if (pickedStartTime != null) {
+  //     // return DateTime(startTime.year, startTime.month, startTime.day,
+  //     //     pickedStartTime.hour, pickedStartTime.minute);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +170,7 @@ class MgmtCard extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: Text(
-                          weeklyWorkTime.getDay,
+                          workTime.startTime.day.toString(),
                           style: TextStyle(fontSize: 32, color: kPrimaryColor),
                         ),
                       ),
@@ -198,7 +189,7 @@ class MgmtCard extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: Text(
-                        weeklyWorkTime.dayOfWeekToString,
+                        workTime.getDayOfWeekToString(),
                         style: TextStyle(
                             fontSize: 32, fontWeight: FontWeight.w300),
                       ),
@@ -223,7 +214,7 @@ class MgmtCard extends StatelessWidget {
                             child: Container(
                               margin: EdgeInsets.only(left: 20, top: 5),
                               child: Text(
-                                weeklyWorkTime.getStartTime(),
+                                workTime.getStartTime,
                                 style: TextStyle(
                                   fontSize: 30,
                                 ),
@@ -247,7 +238,7 @@ class MgmtCard extends StatelessWidget {
                             child: Container(
                               margin: EdgeInsets.only(left: 20, top: 5),
                               child: Text(
-                                weeklyWorkTime.getEndTime(),
+                                workTime.getEndTime,
                                 style: TextStyle(
                                   fontSize: 30,
                                 ),

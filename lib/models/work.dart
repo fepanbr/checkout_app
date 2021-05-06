@@ -89,16 +89,6 @@ class Work with ChangeNotifier {
     _getPercentage(workingTimeInWeekly);
     infoMessage = _stateMessage.restTimeInWeeklyMsg(workingTimeInWeekly);
     notifyListeners();
-
-    // Timer timer = Timer(Duration(seconds: 3), () async {
-    //   DateTime now = DateTime.now();
-    //   DateTime? startTime = await _firebaseWorkTime!.getStartTime(now);
-    //   if (startTime == null) return;
-    //   _infoText =
-    //       StateMessage.workingMsg(TimeFormat(now.difference(startTime)));
-    //   notifyListeners();
-    // });
-    // timer.cancel();
   }
 
   void _getPercentage(Duration duration) {
