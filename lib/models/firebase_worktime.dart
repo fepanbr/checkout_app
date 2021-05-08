@@ -66,9 +66,9 @@ class FirebaseWorkTime {
     });
   }
 
-  Future<Duration> getWeeklyWorkTimes() async {
+  Future<Duration> getWeeklyWorkingTime() async {
     DateTime currentDate = DateTime.now();
-    DateTime monday = findFirstDateOfTheWeek(currentDate);
+    DateTime monday = _findFirstDateOfTheWeek(currentDate);
     QuerySnapshot value = await _worktimes
         .where('startDate',
             isGreaterThanOrEqualTo: DateFormat("yyyyMMdd").format(monday))
@@ -85,10 +85,10 @@ class FirebaseWorkTime {
     return Duration(minutes: sumMinutes);
   }
 
-  Future<List<WorkTime>> getWorkLogsInThisWeek() async {
-    List<WorkTime> workTimeList = [];
+  Future<Set<WorkTime>> getWorkLogsInThisWeek() async {
+    Set<WorkTime> workTimeList = Set();
     DateTime currentDate = DateTime.now();
-    DateTime monday = findFirstDateOfTheWeek(currentDate);
+    DateTime monday = _findFirstDateOfTheWeek(currentDate);
     QuerySnapshot value = await _worktimes
         .where('startDate',
             isGreaterThanOrEqualTo: DateFormat("yyyyMMdd").format(monday))
@@ -96,34 +96,29 @@ class FirebaseWorkTime {
 
     value.docs.forEach((element) {
       if (element.exists) {
-        print(element.data()!);
         workTimeList.add(WorkTime.fromMap(element.data()!));
       }
     });
-    var startDateAtLastWorkTime = workTimeList.last.startTime;
-    var length = workTimeList.length;
-    for (var i = 1; i < 5 - length + 1; i++) {
-      var fakeDateTime = DateTime(startDateAtLastWorkTime.year,
-          startDateAtLastWorkTime.month, startDateAtLastWorkTime.day + i, 0, 0);
+    // var startDateAtLastWorkTime = workTimeList.last.startTime;
+    // var length = workTimeList.length;
+    // for (var i = 1; i < 5 - length + 1; i++) {
+    //   var fakeDateTime = DateTime(startDateAtLastWorkTime.year,
+    //       startDateAtLastWorkTime.month, startDateAtLastWorkTime.day + i, 0, 0);
 
-      workTimeList.add(WorkTime(
-          startTime: fakeDateTime,
-          endTime: fakeDateTime,
-          haveLunch: false,
-          workingTime: 0));
-    }
+    //   workTimeList.add(WorkTime(
+    //       startTime: fakeDateTime,
+    //       endTime: fakeDateTime,
+    //       haveLunch: false,
+    //       workingTime: 0));
+    // }
 
-    print(workTimeList.length);
+    // print(workTimeList.length);
 
     return workTimeList;
   }
 
-  DateTime findFirstDateOfTheWeek(DateTime dateTime) {
+  DateTime _findFirstDateOfTheWeek(DateTime dateTime) {
     return dateTime.subtract(Duration(days: dateTime.weekday - 1));
-  }
-
-  DateTime findLastDateOfTheWeek(DateTime dateTime) {
-    return dateTime.add(Duration(days: 5 - dateTime.weekday));
   }
 
   updateWorkTime(DateTime dateTime) {

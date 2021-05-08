@@ -1,8 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:songaree_worktime/constants.dart';
-import 'package:songaree_worktime/models/firebase_worktime.dart';
+import 'package:songaree_worktime/models/weekly_worktime.dart';
 import 'package:songaree_worktime/models/work.dart';
 import 'package:songaree_worktime/models/worktime.dart';
 
@@ -12,15 +11,18 @@ class MgmtWorkTimeScreen extends StatefulWidget {
 }
 
 class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
-  List<WorkTime> weeklyWorkTimeList = [];
+  List<WorkTime> weeklyList = [];
   getWorkLogsInThisWeek() async {
-    weeklyWorkTimeList = await FirebaseWorkTime().getWorkLogsInThisWeek();
+    await Provider.of<WeeklyWorkTime>(context, listen: false)
+        .initWeeklyWorkTime();
+    weeklyList = Provider.of<WeeklyWorkTime>(context, listen: false)
+        .weeklyWorkTime
+        .toList();
   }
 
   void updateWorkTime(WorkTime workTime) {}
 
   Future<void> getWeeklyWork() async {
-    getWorkLogsInThisWeek();
     Provider.of<Work>(context, listen: false).getRestWeeklyWorkTime();
   }
 
@@ -38,7 +40,6 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
                     child: Center(
                       child: Text(
                         Provider.of<Work>(context).infoMessage,
-                        // Provider.of<WeeklyWork>(context).restTimeInfo,
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
@@ -56,10 +57,10 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
                             padding: EdgeInsets.only(left: 40, right: 40),
                             itemBuilder: (context, index) {
                               return MgmtCard(
-                                workTime: weeklyWorkTimeList[index],
+                                workTime: weeklyList[index],
                               );
                             },
-                            itemCount: 5,
+                            itemCount: weeklyList.length,
                           ),
                         );
                       } else {

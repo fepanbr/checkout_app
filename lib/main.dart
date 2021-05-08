@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:songaree_worktime/constants.dart';
+import 'package:songaree_worktime/models/weekly_worktime.dart';
 import 'package:songaree_worktime/models/work.dart';
 import 'package:songaree_worktime/screens/home_screen.dart';
 import 'package:songaree_worktime/screens/mgmt_worktime_screen.dart';
@@ -22,6 +23,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<Work>(
           create: (context) => Work(),
+        ),
+        ChangeNotifierProvider<WeeklyWorkTime>(
+          create: (context) => WeeklyWorkTime(),
         ),
       ],
       child: FutureBuilder(

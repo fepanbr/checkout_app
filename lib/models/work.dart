@@ -17,14 +17,17 @@ class Work with ChangeNotifier {
   bool haveLunch = false;
   double percentage = 0;
   String infoMessage = '';
+  List<WorkTime> weeklyWorkTime = [];
 
   WorkState get getState => _state;
 
   Future<void> initWork() async {
     DateTime now = DateTime.now();
     WorkTime? workLog = await _firebaseWorkTime.getWorkLog(now);
-    Duration workingTimeInWeekly = await _firebaseWorkTime.getWeeklyWorkTimes();
+    Duration workingTimeInWeekly =
+        await _firebaseWorkTime.getWeeklyWorkingTime();
     _getPercentage(workingTimeInWeekly);
+
     // 출근 전
     if (workLog == null) {
       _state = WorkState.beforeWork;
@@ -85,7 +88,8 @@ class Work with ChangeNotifier {
   }
 
   void getRestWeeklyWorkTime() async {
-    Duration workingTimeInWeekly = await _firebaseWorkTime.getWeeklyWorkTimes();
+    Duration workingTimeInWeekly =
+        await _firebaseWorkTime.getWeeklyWorkingTime();
     _getPercentage(workingTimeInWeekly);
     infoMessage = _stateMessage.restTimeInWeeklyMsg(workingTimeInWeekly);
     notifyListeners();
