@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:songaree_worktime/constants.dart';
 import 'package:songaree_worktime/models/weekly_worktime.dart';
-import 'package:songaree_worktime/models/work.dart';
 import 'package:songaree_worktime/models/worktime.dart';
 
 class MgmtWorkTimeScreen extends StatefulWidget {
@@ -13,23 +12,16 @@ class MgmtWorkTimeScreen extends StatefulWidget {
 class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
   List<WorkTime> weeklyList = [];
   getWorkLogsInThisWeek() async {
-    await Provider.of<WeeklyWorkTime>(context, listen: false)
-        .initWeeklyWorkTime();
-    weeklyList = Provider.of<WeeklyWorkTime>(context, listen: false)
-        .weeklyWorkTime
-        .toList();
-  }
-
-  void updateWorkTime(WorkTime workTime) {}
-
-  Future<void> getWeeklyWork() async {
-    Provider.of<Work>(context, listen: false).getRestWeeklyWorkTime();
+    var weeklyWorkProvider =
+        Provider.of<WeeklyWorkTime>(context, listen: false);
+    await weeklyWorkProvider.initWeeklyWorkTime();
+    weeklyList = weeklyWorkProvider.weeklyWorkTime.toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: getWeeklyWork(),
+      future: getWorkLogsInThisWeek(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return SafeArea(
@@ -39,41 +31,32 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
                   Container(
                     child: Center(
                       child: Text(
-                        Provider.of<Work>(context).infoMessage,
+                        Provider.of<WeeklyWorkTime>(context).infoMessage,
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ),
                     height: 120,
                   ),
-                  FutureBuilder(
-                    future: getWorkLogsInThisWeek(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        return Container(
-                          width: double.infinity,
-                          height: 600,
-                          child: ListView.builder(
-                            padding: EdgeInsets.only(left: 40, right: 40),
-                            itemBuilder: (context, index) {
-                              return MgmtCard(
-                                workTime: weeklyList[index],
-                              );
-                            },
-                            itemCount: weeklyList.length,
-                          ),
+                  Container(
+                    width: double.infinity,
+                    height: 600,
+                    child: ListView.builder(
+                      padding: EdgeInsets.only(left: 40, right: 40),
+                      itemBuilder: (context, index) {
+                        return MgmtCard(
+                          workTime: weeklyList[index],
                         );
-                      } else {
-                        return Center(child: CircularProgressIndicator());
-                      }
-                    },
+                      },
+                      itemCount: weeklyList.length,
+                    ),
                   ),
                 ],
               ),
             ),
           );
         } else {
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         }
       },
     );

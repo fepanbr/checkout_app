@@ -22,15 +22,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  // var res = await http.post(
-  //   Uri.http($SERVER_IP, unencodedPath)"/user",
-  //   body: {
-  //     "name": _usernameController.text,
-  //     "password": _passwordController.text
-  //   },
-  // );
-
-  // return res;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

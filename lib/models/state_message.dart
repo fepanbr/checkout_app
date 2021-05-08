@@ -1,3 +1,4 @@
+import 'package:songaree_worktime/models/weekly_worktime.dart';
 import 'package:songaree_worktime/models/worktime.dart';
 
 class StateMessage {
@@ -31,10 +32,13 @@ class StateMessage {
 
   String restTimeInWeeklyMsg(Duration duration) {
     var workingTimeMap = _getWorkingTime(duration);
-
-    return duration.inHours <= 40
-        ? '이번주 남은 근무 시간: ${workingTimeMap['hour']}시간 ${workingTimeMap['minutes']}분'
-        : '이번주 근무시간을 모두 채웠습니다.';
+    if (!workingTimeMap['isNegative']) {
+      return duration.inHours <= 40
+          ? '이번주 남은 근무 시간: ${workingTimeMap['hour']}시간 ${workingTimeMap['minutes']}분'
+          : '이번주 근무시간을 모두 채웠습니다.';
+    } else {
+      return "이번주 근무시간을 모두 채웠습니다.";
+    }
   }
 
   String totalTimeInWeeklyMsg(Duration duration) {
@@ -56,9 +60,13 @@ class StateMessage {
         : '${endDate.hour}시 ${endDate.minute}분에 퇴근 가능합니다';
   }
 
-  Map<String, int> _getWorkingTime(Duration duration) {
+  Map<String, dynamic> _getWorkingTime(Duration duration) {
     var hour = duration.inMinutes ~/ 60;
     var minutes = duration.inMinutes % 60;
-    return {"hour": hour, "minutes": minutes};
+    return {
+      "hour": hour,
+      "minutes": minutes,
+      "isNegative": duration.isNegative
+    };
   }
 }
