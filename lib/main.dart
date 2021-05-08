@@ -6,6 +6,7 @@ import 'package:songaree_worktime/constants.dart';
 import 'package:songaree_worktime/models/work.dart';
 import 'package:songaree_worktime/screens/home_screen.dart';
 import 'package:songaree_worktime/screens/mgmt_worktime_screen.dart';
+import 'package:songaree_worktime/size_config.dart';
 import 'package:songaree_worktime/theme.dart';
 
 final storage = FlutterSecureStorage();
@@ -72,6 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
