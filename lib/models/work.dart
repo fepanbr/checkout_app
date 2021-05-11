@@ -28,6 +28,8 @@ class Work with ChangeNotifier {
         await _firebaseWorkTime.getWeeklyWorkingTime();
     _getPercentage(workingTimeInWeekly);
 
+    print('workLog : $workLog');
+
     // 출근 전
     if (workLog == null) {
       _state = WorkState.beforeWork;
@@ -35,7 +37,7 @@ class Work with ChangeNotifier {
       notifyListeners();
     } else {
       // 출근 후
-      if (workLog.endTime == null) {
+      if (workLog.getWorkState == WorkState.working) {
         if (now.weekday != FRIDAY) {
           infoMessage = _stateMessage.workingMsg(workLog);
         } else {

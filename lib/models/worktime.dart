@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:songaree_worktime/models/work.dart';
 
 class WorkTime {
   static final Duration _lunchTime = Duration(hours: 1);
@@ -9,14 +10,16 @@ class WorkTime {
   DateTime? endTime;
   bool haveLunch;
   int? workingTime;
+  late WorkState _state;
 
   get getStartTime => DateFormat("HH:mm").format(startTime);
   get getEndTime =>
       endTime != null ? DateFormat("HH:mm").format(endTime!) : "00:00";
+  get getWorkState => _state;
 
   @override
   String toString() {
-    return 'WorkTime: {startTime: ${startTime}, endTime: ${endTime}}';
+    return 'WorkTime: {startTime: $startTime, endTime: $endTime}';
   }
 
   WorkTime(
@@ -27,14 +30,23 @@ class WorkTime {
     this._setLunch(haveLunch);
     this._calculateTodayWokingTime();
     this._setEndTime();
+    this._setWorkState();
   }
 
   static WorkTime fromMap(Map<String, dynamic> workTimeMap) {
     String startTime = workTimeMap["startDate"];
     String? endTime = workTimeMap["endDate"];
+    print(workTimeMap['haveLunch']);
     bool haveLunch =
-        workTimeMap["haveLunch"] ? workTimeMap["haveLunch"] : false;
+        workTimeMap["haveLunch"] != null ? workTimeMap["haveLunch"] : false;
     int? workingTime = workTimeMap["workingTime"];
+    var workTIme = WorkTime(
+      startTime: _toDateTime(startTime)!,
+      endTime: _toDateTime(endTime),
+      haveLunch: haveLunch,
+      workingTime: workingTime,
+    );
+    print('WorkTime: $workTIme');
     return WorkTime(
       startTime: _toDateTime(startTime)!,
       endTime: _toDateTime(endTime),
@@ -118,5 +130,17 @@ class WorkTime {
       haveLunch = false;
     else
       haveLunch = lunch;
+  }
+
+  void _setWorkState() {
+    if (DateFormat("HH:mm").format(startTime) == "00:00" &&
+        DateFormat("HH:mm").format(endTime!) == "00:00") {
+      _state = WorkState.beforeWork;
+    } else if (DateFormat("HH:mm").format(startTime) != "00:00" &&
+        DateFormat("HH:mm").format(endTime!) == "00:00") {
+      _state = WorkState.working;
+    } else {
+      _state = WorkState.afterWork;
+    }
   }
 }

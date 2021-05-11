@@ -25,6 +25,8 @@ class FirebaseWorkTime {
       DocumentSnapshot documentSnapshot =
           await _worktimes.doc(DateFormat("yyyyMMdd").format(time)).get();
       Map<String, dynamic>? data = documentSnapshot.data();
+      print("firebase: $data");
+
       if (data == null)
         return null;
       else

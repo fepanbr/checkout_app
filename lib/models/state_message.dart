@@ -61,10 +61,10 @@ class StateMessage {
   }
 
   Map<String, dynamic> _getWorkingTime(Duration duration) {
-    var hour = duration.inMinutes ~/ 60;
+    var hours = duration.inMinutes ~/ 60;
     var minutes = duration.inMinutes % 60;
     return {
-      "hour": hour,
+      "hours": hours,
       "minutes": minutes,
       "isNegative": duration.isNegative
     };
