@@ -10,16 +10,32 @@ import 'package:songaree_worktime/screens/components/working_bar.dart';
 import 'package:songaree_worktime/screens/login_screen.dart';
 import 'package:songaree_worktime/size_config.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final CollectionReference users =
       FirebaseFirestore.instance.collection('users');
+
   final User? user = FirebaseAuth.instance.currentUser;
+
   final DateTime now = DateTime.now();
 
   @override
-  Widget build(BuildContext context) {
-    final Work _work = Provider.of<Work>(context);
+  void initState() {
+    super.initState();
+    initWork();
+  }
+
+  initWork() {
+    final Work _work = Provider.of<Work>(context, listen: false);
     _work.initWork();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {

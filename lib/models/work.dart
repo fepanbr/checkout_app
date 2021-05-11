@@ -22,13 +22,12 @@ class Work with ChangeNotifier {
   WorkState get getState => _state;
 
   Future<void> initWork() async {
+    print('initWork');
     DateTime now = DateTime.now();
     WorkTime? workLog = await _firebaseWorkTime.getWorkLog(now);
     Duration workingTimeInWeekly =
         await _firebaseWorkTime.getWeeklyWorkingTime();
     _getPercentage(workingTimeInWeekly);
-
-    print('workLog : $workLog');
 
     // 출근 전
     if (workLog == null) {
@@ -38,11 +37,11 @@ class Work with ChangeNotifier {
     } else {
       // 출근 후
       if (workLog.getWorkState == WorkState.working) {
-        if (now.weekday != FRIDAY) {
-          infoMessage = _stateMessage.workingMsg(workLog);
-        } else {
+        if (now.weekday == FRIDAY) {
           infoMessage =
               _stateMessage.workOffTimeInFriday(workLog, workingTimeInWeekly);
+        } else {
+          infoMessage = _stateMessage.workingMsg(workLog);
         }
         haveLunch = false;
         _state = WorkState.working;

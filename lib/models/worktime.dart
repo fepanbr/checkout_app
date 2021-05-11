@@ -36,17 +36,9 @@ class WorkTime {
   static WorkTime fromMap(Map<String, dynamic> workTimeMap) {
     String startTime = workTimeMap["startDate"];
     String? endTime = workTimeMap["endDate"];
-    print(workTimeMap['haveLunch']);
     bool haveLunch =
         workTimeMap["haveLunch"] != null ? workTimeMap["haveLunch"] : false;
     int? workingTime = workTimeMap["workingTime"];
-    var workTIme = WorkTime(
-      startTime: _toDateTime(startTime)!,
-      endTime: _toDateTime(endTime),
-      haveLunch: haveLunch,
-      workingTime: workingTime,
-    );
-    print('WorkTime: $workTIme');
     return WorkTime(
       startTime: _toDateTime(startTime)!,
       endTime: _toDateTime(endTime),
