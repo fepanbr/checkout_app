@@ -16,6 +16,7 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
         Provider.of<WeeklyWorkTime>(context, listen: false);
     weeklyWorkProvider.initFirebase();
     await weeklyWorkProvider.initWeeklyWorkTime();
+
     weeklyList = weeklyWorkProvider.weeklyWorkTime.toList();
   }
 
@@ -32,7 +33,8 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
                   Container(
                     child: Center(
                       child: Text(
-                        Provider.of<WeeklyWorkTime>(context).infoMessage,
+                        Provider.of<WeeklyWorkTime>(context, listen: false)
+                            .infoMessage,
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),

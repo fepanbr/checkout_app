@@ -34,7 +34,7 @@ class StateMessage {
     var workingTimeMap = _getWorkingTime(duration);
     if (!workingTimeMap['isNegative']) {
       return duration.inHours <= 40
-          ? '이번주 남은 근무 시간: ${workingTimeMap['hour']}시간 ${workingTimeMap['minutes']}분'
+          ? '이번주 남은 근무 시간: ${workingTimeMap['hours']}시간 ${workingTimeMap['minutes']}분'
           : '이번주 근무시간을 모두 채웠습니다.';
     } else {
       return "이번주 근무시간을 모두 채웠습니다.";

@@ -95,7 +95,8 @@ class Work with ChangeNotifier {
     Duration workingTimeInWeekly =
         await _firebaseWorkTime.getWeeklyWorkingTime();
     _getPercentage(workingTimeInWeekly);
-    infoMessage = _stateMessage.restTimeInWeeklyMsg(workingTimeInWeekly);
+    infoMessage = _stateMessage.restTimeInWeeklyMsg(
+        Duration(minutes: 2400 - workingTimeInWeekly.inMinutes));
     notifyListeners();
   }
 
