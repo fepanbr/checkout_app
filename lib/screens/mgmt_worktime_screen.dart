@@ -14,6 +14,7 @@ class _MgmtWorkTimeScreenState extends State<MgmtWorkTimeScreen> {
   getWorkLogsInThisWeek() async {
     var weeklyWorkProvider =
         Provider.of<WeeklyWorkTime>(context, listen: false);
+    weeklyWorkProvider.initFirebase();
     await weeklyWorkProvider.initWeeklyWorkTime();
     weeklyList = weeklyWorkProvider.weeklyWorkTime.toList();
   }
@@ -118,6 +119,8 @@ class MgmtCard extends StatelessWidget {
   //   }
   // }
 
+  updateWorkTime() {}
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -125,6 +128,7 @@ class MgmtCard extends StatelessWidget {
       elevation: 5,
       child: InkWell(
         onTap: () async {
+          updateWorkTime();
           // DateTime? pickedTime = await selectedTime(
           //   context,
           //   weeklyWorkTime.startTime,

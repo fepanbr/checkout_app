@@ -9,8 +9,12 @@ class WeeklyWorkTime with ChangeNotifier {
   Set<WorkTime> weeklyWorkTime = Set();
   String infoMessage = '';
 
-  FirebaseWorkTime _firebaseWorkTime = FirebaseWorkTime();
+  late FirebaseWorkTime _firebaseWorkTime;
   StateMessage _stateMessage = StateMessage();
+
+  initFirebase() {
+    _firebaseWorkTime = FirebaseWorkTime();
+  }
 
   Future<void> initWeeklyWorkTime() async {
     var now = DateTime.now();

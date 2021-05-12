@@ -26,11 +26,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    initWork();
   }
 
   initWork() {
     final Work _work = Provider.of<Work>(context, listen: false);
+    _work.initFirebase();
     _work.initWork();
   }
 
@@ -48,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
               "phone": user!.phoneNumber,
               "email": user!.email
             });
+            initWork();
           }
 
           return SafeArea(
@@ -59,16 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: SizeConfig.screenHeight,
                 child: Column(
                   children: [
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: [
-                    //     Icon(
-                    //       Icons.wb_cloudy_outlined,
-                    //       color: kBodyTextColorLight,
-                    //       size: getProportionateScreenWidth(70),
-                    //     ),
-                    //   ],
-                    // ),
                     TimeInHourAndMinute(),
                     SizedBox(
                       height: getProportionateScreenHeight(30),

@@ -44,7 +44,7 @@ class StateMessage {
   String totalTimeInWeeklyMsg(Duration duration) {
     var workingTimeMap = _getWorkingTime(duration);
 
-    return '수고하셨습니다.\n총 근무시간: ${workingTimeMap['hour']}시간 ${workingTimeMap['minutes']}분';
+    return '수고하셨습니다.\n총 근무시간: ${workingTimeMap['hours']}시간 ${workingTimeMap['minutes']}분';
   }
 
   String workOffTimeInFriday(WorkTime workLog, Duration workTime) {

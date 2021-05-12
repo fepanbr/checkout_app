@@ -4,10 +4,16 @@ import 'package:intl/intl.dart';
 import 'package:songaree_worktime/models/worktime.dart';
 
 class FirebaseWorkTime {
-  CollectionReference _worktimes = FirebaseFirestore.instance
-      .collection('users')
-      .doc(FirebaseAuth.instance.currentUser!.uid)
-      .collection('worktime');
+  User? user = FirebaseAuth.instance.currentUser;
+  late CollectionReference _worktimes;
+  FirebaseWorkTime() {
+    if (user != null) {
+      _worktimes = FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .collection('worktime');
+    }
+  }
 
   Future<WorkTime?> getStartTime(DateTime time) async {
     DocumentSnapshot documentSnapshot =
