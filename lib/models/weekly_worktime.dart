@@ -37,4 +37,8 @@ class WeeklyWorkTime with ChangeNotifier {
     infoMessage = _stateMessage.restTimeInWeeklyMsg(
         Duration(minutes: inMinutesInWeek - workingTimeInWeekly.inMinutes));
   }
+
+  Future<void> updateWorkTime(WorkTime workTime) async {
+    await _firebaseWorkTime.updateWorkTime(workTime);
+  }
 }

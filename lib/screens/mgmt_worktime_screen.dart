@@ -73,71 +73,77 @@ class MgmtCard extends StatelessWidget {
   }) : super(key: key);
   final WorkTime workTime;
 
-  // Future<WeeklyWorkTime?> selectedTime(
-  //     BuildContext context, WeeklyWorkTime workTime) async {
-  //   var timeOfDayMap = workTime.toTimeOfDayMap();
-  //   late TimeOfDay? pickedEndTime;
-  //   var pickedStartTime = await showTimePicker(
-  //     context: context,
-  //     initialTime: timeOfDayMap["startTime"],
-  //     builder: (context, child) {
-  //       return TimePickerTheme(
-  //           data: TimePickerThemeData(
-  //               backgroundColor: Colors.white,
-  //               dialBackgroundColor: Colors.white,
-  //               dayPeriodBorderSide: BorderSide(width: 0, color: Colors.white),
-  //               dayPeriodTextColor: Colors.white,
-  //               hourMinuteTextColor: Colors.white,
-  //               hourMinuteTextStyle:
-  //                   TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-  //               dialHandColor: kPrimaryColor),
-  //           child: child!);
-  //     },
-  //   );
-  //   if (timeOfDayMap["endTime"] != null) {
-  //     pickedEndTime = await showTimePicker(
-  //       context: context,
-  //       initialTime: timeOfDayMap["endTime"],
-  //       builder: (context, child) {
-  //         return TimePickerTheme(
-  //             data: TimePickerThemeData(
-  //                 backgroundColor: Colors.white,
-  //                 dialBackgroundColor: Colors.white,
-  //                 dayPeriodBorderSide:
-  //                     BorderSide(width: 0, color: Colors.white),
-  //                 dayPeriodTextColor: Colors.white,
-  //                 hourMinuteTextColor: Colors.white,
-  //                 hourMinuteTextStyle:
-  //                     TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-  //                 dialHandColor: kPrimaryColor),
-  //             child: child!);
-  //       },
-  //     );
-  //   }
+  Future<WorkTime> selectedTime(BuildContext context, WorkTime workTime) async {
+    var timeOfDayMap = WorkTime.toTimeOfDay(workTime);
+    late WorkTime result;
+    late DateTime startTime;
+    late DateTime endTime;
+    var pickedStartTime = await showTimePicker(
+      context: context,
+      initialTime: timeOfDayMap["startTime"]!,
+      builder: (context, child) {
+        return TimePickerTheme(
+            data: TimePickerThemeData(
+                backgroundColor: Colors.white,
+                dialBackgroundColor: Colors.white,
+                dayPeriodBorderSide: BorderSide(width: 0, color: Colors.white),
+                dayPeriodTextColor: Colors.white,
+                hourMinuteTextColor: Colors.white,
+                hourMinuteTextStyle:
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                dialHandColor: kPrimaryColor),
+            child: child!);
+      },
+    );
+    var pickedEndTime = await showTimePicker(
+      context: context,
+      initialTime: timeOfDayMap["endTime"]!,
+      builder: (context, child) {
+        return TimePickerTheme(
+            data: TimePickerThemeData(
+                backgroundColor: Colors.white,
+                dialBackgroundColor: Colors.white,
+                dayPeriodBorderSide: BorderSide(width: 0, color: Colors.white),
+                dayPeriodTextColor: Colors.white,
+                hourMinuteTextColor: Colors.white,
+                hourMinuteTextStyle:
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                dialHandColor: kPrimaryColor),
+            child: child!);
+      },
+    );
+    if (pickedStartTime != null) {
+      startTime = DateTime(workTime.startTime.year, workTime.startTime.month,
+          workTime.startTime.day, pickedStartTime.hour, pickedStartTime.minute);
+    } else {
+      startTime = workTime.startTime;
+    }
+    if (pickedEndTime != null) {
+      endTime = DateTime(workTime.endTime!.year, workTime.endTime!.month,
+          workTime.endTime!.day, pickedEndTime.hour, pickedEndTime.minute);
+    } else {
+      endTime = workTime.endTime!;
+    }
+    //TODO: 점심 유무 체크 모달 만들기
+    result = WorkTime(startTime: startTime, endTime: endTime, haveLunch: false);
+    return result;
+  }
 
-  //   if (pickedStartTime != null) {
-  //     // return DateTime(startTime.year, startTime.month, startTime.day,
-  //     //     pickedStartTime.hour, pickedStartTime.minute);
-  //   }
-  // }
-
-  updateWorkTime() {}
+  updateWorkTime(BuildContext context, WorkTime workTime) async {
+    var toUpdateWorkTime = await selectedTime(context, workTime);
+    Provider.of<WeeklyWorkTime>(context, listen: false)
+        .updateWorkTime(toUpdateWorkTime);
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Provider.of<WeeklyWorkTime>(context).
     return Card(
       margin: EdgeInsets.only(bottom: 30),
       elevation: 5,
       child: InkWell(
-        onTap: () async {
-          updateWorkTime();
-          // DateTime? pickedTime = await selectedTime(
-          //   context,
-          //   weeklyWorkTime.startTime,
-          // );
-          // if (pickedTime != null) {
-          //   FirebaseWorkTime().updateWorkTime(pickedTime);
-          // }
+        onTap: () {
+          updateWorkTime(context, workTime);
         },
         child: Container(
           width: 200,

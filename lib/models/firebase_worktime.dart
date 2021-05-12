@@ -106,20 +106,6 @@ class FirebaseWorkTime {
         workTimeList.add(WorkTime.fromMap(element.data()!));
       }
     });
-    // var startDateAtLastWorkTime = workTimeList.last.startTime;
-    // var length = workTimeList.length;
-    // for (var i = 1; i < 5 - length + 1; i++) {
-    //   var fakeDateTime = DateTime(startDateAtLastWorkTime.year,
-    //       startDateAtLastWorkTime.month, startDateAtLastWorkTime.day + i, 0, 0);
-
-    //   workTimeList.add(WorkTime(
-    //       startTime: fakeDateTime,
-    //       endTime: fakeDateTime,
-    //       haveLunch: false,
-    //       workingTime: 0));
-    // }
-
-    // print(workTimeList.length);
 
     return workTimeList;
   }
@@ -128,9 +114,10 @@ class FirebaseWorkTime {
     return dateTime.subtract(Duration(days: dateTime.weekday - 1));
   }
 
-  updateWorkTime(DateTime dateTime) {
+  updateWorkTime(WorkTime workTime) {
     _worktimes
-        .doc(DateFormat("yyyyMMdd").format(dateTime))
-        .update({"startDate": dateTime});
+        .doc(DateFormat("yyyyMMdd").format(workTime.startTime))
+        .update(WorkTime.toMap(workTime))
+        .then((value) => print("update WorkTime"));
   }
 }

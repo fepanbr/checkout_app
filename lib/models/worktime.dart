@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:songaree_worktime/models/work.dart';
 
@@ -45,6 +46,24 @@ class WorkTime {
       haveLunch: haveLunch,
       workingTime: workingTime,
     );
+  }
+
+  static Map<String, TimeOfDay> toTimeOfDay(WorkTime workTime) {
+    return {
+      "startTime": TimeOfDay.fromDateTime(workTime.startTime),
+      "endTime": workTime.endTime != null
+          ? TimeOfDay.fromDateTime(workTime.endTime!)
+          : TimeOfDay(hour: 0, minute: 0),
+    };
+  }
+
+  static Map<String, dynamic> toMap(WorkTime workTime) {
+    return {
+      "startDate": DateFormat("yyyyMMddHHmm").format(workTime.startTime),
+      "endDate": DateFormat("yyyyMMddHHmm").format(workTime.endTime!),
+      "haveLunch": workTime.haveLunch,
+      "workingTime": workTime.workingTime,
+    };
   }
 
   static DateTime? _toDateTime(String? time) {
