@@ -114,6 +114,8 @@ class WorkTime {
   }
 
   void _calculateTodayWokingTime() {
+    if (DateFormat("HH:mm").format(startTime) == "00:00" ||
+        DateFormat("HH:mm").format(endTime!) == "00:00") return;
     if (endTime != null) {
       workingTime = haveLunch
           ? endTime!

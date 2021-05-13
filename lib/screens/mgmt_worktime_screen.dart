@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:songaree_worktime/constants.dart';
 import 'package:songaree_worktime/models/weekly_worktime.dart';
@@ -79,6 +80,7 @@ class MgmtCard extends StatelessWidget {
     late WorkTime result;
     late DateTime startTime;
     late DateTime endTime;
+    late bool haveLunch;
     var pickedStartTime = await showTimePicker(
       context: context,
       initialTime: timeOfDayMap["startTime"]!,
@@ -119,19 +121,42 @@ class MgmtCard extends StatelessWidget {
     } else {
       startTime = workTime.startTime;
     }
+
     if (pickedEndTime != null) {
       endTime = DateTime(workTime.endTime!.year, workTime.endTime!.month,
           workTime.endTime!.day, pickedEndTime.hour, pickedEndTime.minute);
     } else {
       endTime = workTime.endTime!;
     }
-    //TODO: 점심 유무 체크 모달 만들기
+
+    haveLunch = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('식사시간 포함 유무'),
+            content: Text('식사시간을 근무시간에 포함하시겠어요?'),
+            actions: [
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: Text('아니요')),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  child: Text('네')),
+            ],
+          );
+        });
+
+    // TODO: 점심 유무 체크 모달 만들기
     if (pickedStartTime == null && pickedEndTime == null) {
-      result =
-          WorkTime(startTime: startTime, endTime: endTime, haveLunch: false);
-      return result;
-    } else {
       return null;
+    } else {
+      result = WorkTime(
+          startTime: startTime, endTime: endTime, haveLunch: haveLunch);
+      return result;
     }
   }
 
@@ -151,6 +176,9 @@ class MgmtCard extends StatelessWidget {
       elevation: 5,
       child: InkWell(
         onTap: () {
+          if (workTime.startTime.isAfter(DateTime.now())) return;
+          if (DateFormat("HH:mm").format(workTime.startTime) == "00:00" ||
+              DateFormat("HH:mm").format(workTime.endTime!) == "00:00") return;
           updateWorkTime(context, workTime);
         },
         child: Container(
