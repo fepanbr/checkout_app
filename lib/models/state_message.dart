@@ -1,4 +1,3 @@
-import 'package:songaree_worktime/models/weekly_worktime.dart';
 import 'package:songaree_worktime/models/worktime.dart';
 
 class StateMessage {

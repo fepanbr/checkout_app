@@ -76,7 +76,7 @@ class WorkTime {
     return dateTime.subtract(Duration(days: dateTime.weekday - 1));
   }
 
-  /**
+  /*
    * 일주일 치 근무시간 만들기
    */
   static Set<WorkTime> createWeeksDummyWorkTimes(DateTime date) {

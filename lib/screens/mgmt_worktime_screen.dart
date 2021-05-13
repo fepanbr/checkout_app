@@ -73,7 +73,8 @@ class MgmtCard extends StatelessWidget {
   }) : super(key: key);
   final WorkTime workTime;
 
-  Future<WorkTime> selectedTime(BuildContext context, WorkTime workTime) async {
+  Future<WorkTime?> selectedTime(
+      BuildContext context, WorkTime workTime) async {
     var timeOfDayMap = WorkTime.toTimeOfDay(workTime);
     late WorkTime result;
     late DateTime startTime;
@@ -125,14 +126,21 @@ class MgmtCard extends StatelessWidget {
       endTime = workTime.endTime!;
     }
     //TODO: 점심 유무 체크 모달 만들기
-    result = WorkTime(startTime: startTime, endTime: endTime, haveLunch: false);
-    return result;
+    if (pickedStartTime == null && pickedEndTime == null) {
+      result =
+          WorkTime(startTime: startTime, endTime: endTime, haveLunch: false);
+      return result;
+    } else {
+      return null;
+    }
   }
 
   updateWorkTime(BuildContext context, WorkTime workTime) async {
     var toUpdateWorkTime = await selectedTime(context, workTime);
-    Provider.of<WeeklyWorkTime>(context, listen: false)
-        .updateWorkTime(toUpdateWorkTime);
+    if (toUpdateWorkTime != null) {
+      Provider.of<WeeklyWorkTime>(context, listen: false)
+          .updateWorkTime(toUpdateWorkTime);
+    }
   }
 
   @override
