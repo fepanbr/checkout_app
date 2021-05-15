@@ -80,7 +80,7 @@ class MgmtCard extends StatelessWidget {
     late WorkTime result;
     late DateTime startTime;
     late DateTime endTime;
-    late bool haveLunch;
+    bool? haveLunch;
     var pickedStartTime = await showTimePicker(
       context: context,
       initialTime: timeOfDayMap["startTime"]!,
@@ -150,12 +150,13 @@ class MgmtCard extends StatelessWidget {
           );
         });
 
-    // TODO: 점심 유무 체크 모달 만들기
     if (pickedStartTime == null && pickedEndTime == null) {
       return null;
     } else {
       result = WorkTime(
-          startTime: startTime, endTime: endTime, haveLunch: haveLunch);
+          startTime: startTime,
+          endTime: endTime,
+          haveLunch: haveLunch == null ? false : true);
       return result;
     }
   }
@@ -177,8 +178,6 @@ class MgmtCard extends StatelessWidget {
       child: InkWell(
         onTap: () {
           if (workTime.startTime.isAfter(DateTime.now())) return;
-          if (DateFormat("HH:mm").format(workTime.startTime) == "00:00" ||
-              DateFormat("HH:mm").format(workTime.endTime!) == "00:00") return;
           updateWorkTime(context, workTime);
         },
         child: Container(

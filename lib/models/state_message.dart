@@ -9,7 +9,7 @@ class StateMessage {
 
   String offWorkMsg(Duration duration) {
     var workingTime = _getWorkingTime(duration);
-    return '${workingTime['hour']}시간 ${workingTime['minutes']}분 근무하셨습니다.';
+    return '${workingTime['hours']}시간 ${workingTime['minutes']}분 근무하셨습니다.';
   }
 
   String workMsg(DateTime dateTime) {

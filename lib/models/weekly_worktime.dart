@@ -39,6 +39,7 @@ class WeeklyWorkTime with ChangeNotifier {
   }
 
   Future<void> updateWorkTime(WorkTime workTime) async {
+    if (!workTime.isValidWorkTime) return;
     await _firebaseWorkTime.updateWorkTime(workTime);
   }
 }
