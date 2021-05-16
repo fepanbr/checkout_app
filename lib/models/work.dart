@@ -27,6 +27,7 @@ class Work with ChangeNotifier {
 
   Future<void> initWork() async {
     DateTime now = DateTime.now();
+    if (now.weekday == 7 || now.weekday == 6) return;
     WorkTime? workLog = await _firebaseWorkTime.getWorkLog(now);
     Duration workingTimeInWeekly =
         await _firebaseWorkTime.getWeeklyWorkingTime();
