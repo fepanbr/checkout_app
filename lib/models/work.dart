@@ -9,6 +9,8 @@ enum WorkState { beforeWork, working, afterWork }
 
 class Work with ChangeNotifier {
   static const int FRIDAY = 5;
+  static const int SATURDAY = 6;
+  static const int SUNDAY = 7;
 
   late FirebaseWorkTime _firebaseWorkTime;
   StateMessage _stateMessage = StateMessage();
@@ -27,7 +29,7 @@ class Work with ChangeNotifier {
 
   Future<void> initWork() async {
     DateTime now = DateTime.now();
-    if (now.weekday == 7 || now.weekday == 6) return;
+    if (now.weekday == SATURDAY || now.weekday == SUNDAY) return;
     WorkTime? workLog = await _firebaseWorkTime.getWorkLog(now);
     Duration workingTimeInWeekly =
         await _firebaseWorkTime.getWeeklyWorkingTime();
