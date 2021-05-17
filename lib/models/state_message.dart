@@ -24,7 +24,7 @@ class StateMessage {
 
   String workingMsg(WorkTime workLog) {
     DateTime now = DateTime.now();
-    var duration = now.difference(workLog.startTime);
+    var duration = now.add(Duration(hours: 1)).difference(workLog.startTime);
     var workingTimeMap = _getWorkingTime(duration);
     return '${workingTimeMap['hours']}시간 ${workingTimeMap['minutes']}분 근무 중!';
   }
