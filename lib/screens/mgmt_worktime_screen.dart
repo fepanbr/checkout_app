@@ -133,6 +133,7 @@ class MgmtCard extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            titleTextStyle: TextStyle(color: kBodyTextColorLight),
             title: Text('식사시간 포함 유무'),
             content: Text('식사시간을 근무시간에 포함하시겠어요?'),
             actions: [
